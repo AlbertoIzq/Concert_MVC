@@ -1,14 +1,27 @@
 using ConcertWeb.Data;
 using Microsoft.EntityFrameworkCore;
+using DotEnv.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
-// Add the database service
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+// Read environment variables.
+new EnvLoader().Load();
+var envVarReader = new EnvReader();
+// Get connectionString
+string serverName = envVarReader["AppSettings_DefaultConnection_ServerName"];
+string databaseName = envVarReader["AppSettings_DefaultConnection_DatabaseName"];
+string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+connectionString = connectionString?.Replace("ServerName", serverName);
+connectionString = connectionString?.Replace("DatabaseName", databaseName);
 
+// Add services to the container.
+
+// Add the MVC service.
+builder.Services.AddControllersWithViews();
+
+// Add the database service.
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(connectionString));
 
 var app = builder.Build();
 
