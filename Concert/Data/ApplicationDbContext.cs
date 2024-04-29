@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ConcertWeb.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ConcertWeb.Data
 {
@@ -9,5 +10,8 @@ namespace ConcertWeb.Data
         {
 
         }
+
+        // To create a table for Category data model
+        public DbSet<Category> Categories { get; set; }
     }
 }
