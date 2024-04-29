@@ -1,7 +1,7 @@
 ﻿@using ConcertWeb.Models;
 @model List<Category>
 
-<div class"container">
+<div class="container">
     <div class="row pt-2 pb-3">
         <div class="col-6">
             <h2 class="text-primary">
@@ -9,11 +9,12 @@
             </h2>
         </div>
         <div class="col-6 text-end">
-            <a asp-controller="" asp-action="" class="btn btn-primary">
+            <a asp-controller="Category" asp-action="Create" class="btn btn-primary">
                 <i class="bi bi-plus-square"></i> Create new Category
             </a>
         </div>
     </div>
+    <!-- Table -->
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
