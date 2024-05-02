@@ -28,9 +28,18 @@ namespace Concert.Controllers
         [HttpPost]
         public IActionResult Create(Category obj)
         {
-            _db.Categories.Add(obj);
-            _db.SaveChanges();
-            return RedirectToAction("Index");
+            if (obj.Name.Any(char.IsDigit))
+            {
+                ModelState.AddModelError("name", "The Name can contain letters only.");
+            }
+
+            if (ModelState.IsValid)
+            {
+                _db.Categories.Add(obj);
+                _db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View();
         }
     }
 }
