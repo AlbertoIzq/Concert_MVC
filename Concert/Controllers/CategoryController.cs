@@ -59,23 +59,16 @@ namespace Concert.Controllers
             return View(categoryFromDb);
         }
 
-        /* // TODO
         [HttpPost]
         public IActionResult Edit(Category obj)
         {
-            if (obj.Name.Any(char.IsDigit))
-            {
-                ModelState.AddModelError("name", "The Name can contain letters only.");
-            }
-
             if (ModelState.IsValid)
             {
-                _db.Categories.Add(obj);
+                _db.Categories.Update(obj);
                 _db.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View();
         }
-        */
     }
 }
