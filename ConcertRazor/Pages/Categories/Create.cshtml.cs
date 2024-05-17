@@ -22,9 +22,20 @@ namespace ConcertRazor.Pages.Categories
 
         public IActionResult OnPost()
         {
-            _db.Categories.Add(Category);
-            _db.SaveChanges();
-            return RedirectToPage("Index");
+            if (Category.Name.Any(char.IsDigit))
+            {
+                ModelState.AddModelError("name", "The Name can contain letters only.");
+            }
+
+            if (ModelState.IsValid)
+            {
+                _db.Categories.Add(Category);
+                _db.SaveChanges();
+                TempData["success"] = "Category created successfully";
+                return RedirectToPage("Index");
+            }
+
+            return RedirectToPage("Create");
         }
     }
 }
