@@ -1,6 +1,5 @@
 using ConcertRazor.Data;
 using ConcertRazor.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ConcertRazor.Pages.Categories
