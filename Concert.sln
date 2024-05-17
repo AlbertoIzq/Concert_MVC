@@ -5,7 +5,7 @@ VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Concert", "Concert\Concert.csproj", "{7FE173B7-1524-4D3A-BD28-120786AA0293}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConcertRazor", "ConcertRazor\ConcertRazor.csproj", "{029B6720-CB02-47B2-B8AF-47450FD71B08}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConcertRazor", "ConcertRazor\ConcertRazor.csproj", "{029B6720-CB02-47B2-B8AF-47450FD71B08}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
