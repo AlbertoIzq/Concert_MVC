@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace Concert.Migrations
+namespace Concert.DataAccess.Migrations
 {
     /// <inheritdoc />
     public partial class AddCategoryTableToDb : Migration

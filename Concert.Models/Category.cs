@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace ConcertWeb.Models
+namespace Concert.Models
 {
     public class Category
     {

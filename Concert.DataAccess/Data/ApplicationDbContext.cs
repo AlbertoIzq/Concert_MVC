@@ -1,7 +1,7 @@
-﻿using ConcertWeb.Models;
+﻿using Concert.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace ConcertWeb.Data
+namespace Concert.DataAccess.Data
 {
     public class ApplicationDbContext : DbContext
     {

@@ -1,5 +1,5 @@
-﻿using ConcertWeb.Data;
-using ConcertWeb.Models;
+﻿using Concert.DataAccess.Data;
+using Concert.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Concert.Controllers
