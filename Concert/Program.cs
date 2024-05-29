@@ -25,8 +25,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-// Add ICategoryRepository service
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+// Add IUnitOfWork service
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 var app = builder.Build();
 
