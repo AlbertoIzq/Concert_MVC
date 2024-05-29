@@ -1,6 +1,8 @@
 using Concert.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using DotEnv.Core;
+using Concert.DataAccess.Repository.IRepository;
+using Concert.DataAccess.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +24,9 @@ builder.Services.AddControllersWithViews();
 // Add the database service.
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
+
+// Add ICategoryRepository service
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 var app = builder.Build();
 
