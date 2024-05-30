@@ -3,8 +3,9 @@ using Concert.DataAccess.Repository.IRepository;
 using Concert.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Concert.Controllers
+namespace ConcertWeb.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -51,7 +52,7 @@ namespace Concert.Controllers
                 return NotFound();
             }
 
-            Category? categoryFromDb = _unitOfWork.Category.Get(u => u.Id==id);
+            Category? categoryFromDb = _unitOfWork.Category.Get(u => u.Id == id);
 
             if (categoryFromDb == null)
             {
