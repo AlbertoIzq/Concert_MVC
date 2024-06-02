@@ -30,10 +30,7 @@ namespace ConcertWeb.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult Create(Category obj)
         {
-            if (obj.Name.Any(char.IsDigit))
-            {
-                ModelState.AddModelError("name", "The Name can contain letters only.");
-            }
+            ValidateCategory(obj);
 
             if (ModelState.IsValid)
             {
@@ -65,6 +62,8 @@ namespace ConcertWeb.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult Edit(Category obj)
         {
+            ValidateCategory(obj);
+
             if (ModelState.IsValid)
             {
                 _unitOfWork.Category.Update(obj);
@@ -106,6 +105,14 @@ namespace ConcertWeb.Areas.Admin.Controllers
             _unitOfWork.Save();
             TempData["success"] = "Category deleted successfully";
             return RedirectToAction("Index");
+        }
+
+        private void ValidateCategory(Category category)
+        {
+            if (category.Name.Any(char.IsDigit))
+            {
+                ModelState.AddModelError("name", "The Name can contain letters only.");
+            }
         }
     }
 }
