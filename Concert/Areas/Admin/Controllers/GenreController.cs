@@ -6,20 +6,20 @@ using Microsoft.AspNetCore.Mvc;
 namespace ConcertWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class CategoryController : Controller
+    public class GenreController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public CategoryController(IUnitOfWork unitOfWork)
+        public GenreController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
 
         public IActionResult Index()
         {
-            List<Category> objCategoryList = _unitOfWork.Category.GetAll().ToList();
+            List<Genre> objGenreList = _unitOfWork.Genre.GetAll().ToList();
 
-            return View(objCategoryList);
+            return View(objGenreList);
         }
 
         public IActionResult Create()
@@ -28,15 +28,15 @@ namespace ConcertWeb.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Category obj)
+        public IActionResult Create(Genre obj)
         {
-            ValidateCategory(obj);
+            ValidateGenre(obj);
 
             if (ModelState.IsValid)
             {
-                _unitOfWork.Category.Add(obj);
+                _unitOfWork.Genre.Add(obj);
                 _unitOfWork.Save();
-                TempData["success"] = "Category created successfully";
+                TempData["success"] = "Genre created successfully";
                 return RedirectToAction("Index");
             }
             return View();
@@ -49,26 +49,26 @@ namespace ConcertWeb.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            Category? categoryFromDb = _unitOfWork.Category.Get(u => u.Id == id);
+            Genre? genreFromDb = _unitOfWork.Genre.Get(u => u.Id == id);
 
-            if (categoryFromDb == null)
+            if (genreFromDb == null)
             {
                 return NotFound();
             }
 
-            return View(categoryFromDb);
+            return View(genreFromDb);
         }
 
         [HttpPost]
-        public IActionResult Edit(Category obj)
+        public IActionResult Edit(Genre obj)
         {
-            ValidateCategory(obj);
+            ValidateGenre(obj);
 
             if (ModelState.IsValid)
             {
-                _unitOfWork.Category.Update(obj);
+                _unitOfWork.Genre.Update(obj);
                 _unitOfWork.Save();
-                TempData["success"] = "Category updated successfully";
+                TempData["success"] = "Genre updated successfully";
                 return RedirectToAction("Index");
             }
             return View();
@@ -81,35 +81,35 @@ namespace ConcertWeb.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            Category? categoryFromDb = _unitOfWork.Category.Get(u => u.Id == id);
+            Genre? genreFromDb = _unitOfWork.Genre.Get(u => u.Id == id);
 
-            if (categoryFromDb == null)
+            if (genreFromDb == null)
             {
                 return NotFound();
             }
 
-            return View(categoryFromDb);
+            return View(genreFromDb);
         }
 
         [HttpPost, ActionName("Delete")]
         public IActionResult DeletePOST(int? id)
         {
-            Category? obj = _unitOfWork.Category.Get(u => u.Id == id);
+            Genre? obj = _unitOfWork.Genre.Get(u => u.Id == id);
 
             if (obj == null)
             {
                 return NotFound();
             }
 
-            _unitOfWork.Category.Remove(obj);
+            _unitOfWork.Genre.Remove(obj);
             _unitOfWork.Save();
-            TempData["success"] = "Category deleted successfully";
+            TempData["success"] = "Genre deleted successfully";
             return RedirectToAction("Index");
         }
 
-        private void ValidateCategory(Category category)
+        private void ValidateGenre(Genre genre)
         {
-            if (category.Name.Any(char.IsDigit))
+            if (genre.Name.Any(char.IsDigit))
             {
                 ModelState.AddModelError("name", "The Name can contain letters only.");
             }

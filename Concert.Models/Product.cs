@@ -26,7 +26,7 @@ namespace Concert.Models
         [Range(1900, 2100, ErrorMessage = "It must be between 1900 and 2100.")]
         [DisplayName("Release Year")]
         public int ReleaseYear { get; set; }
-
+        
         /*
         // TODO because these properties are linked with other models
         [MaxLength(30)]

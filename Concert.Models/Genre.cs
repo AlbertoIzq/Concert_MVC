@@ -3,14 +3,14 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Concert.Models
 {
-    public class Category
+    public class Genre
     {
         [Key]
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Required field.")]
         [MaxLength(30)]
-        [DisplayName("Category Name")]
+        [DisplayName("Music Genre")]
         public string Name { get; set; }
 
         [Required]

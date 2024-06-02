@@ -10,18 +10,18 @@ using System.Threading.Tasks;
 
 namespace Concert.DataAccess.Repository
 {
-    public class CategoryRepository : Repository<Category>, ICategoryRepository
+    public class GenreRepository : Repository<Genre>, IGenreRepository
     {
         private ApplicationDbContext _db;
 
-        public CategoryRepository(ApplicationDbContext db) : base(db)
+        public GenreRepository(ApplicationDbContext db) : base(db)
         {
             _db = db;
         }
 
-        public void Update(Category obj)
+        public void Update(Genre obj)
         {
-            _db.Categories.Update(obj);
+            _db.Genres.Update(obj);
         }
     }
 }

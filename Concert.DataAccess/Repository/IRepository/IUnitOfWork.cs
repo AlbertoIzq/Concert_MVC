@@ -9,7 +9,7 @@ namespace Concert.DataAccess.Repository.IRepository
     public interface IUnitOfWork
     {
         // Inside UnitOfWork we’ll have all the repositories
-        ICategoryRepository Category { get; }
+        IGenreRepository Genre { get; }
         IProductRepository Product { get; }
 
         // Global methods
