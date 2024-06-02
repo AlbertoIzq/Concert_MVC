@@ -10,6 +10,7 @@ namespace Concert.DataAccess.Repository.IRepository
     {
         // Inside UnitOfWork we’ll have all the repositories
         ICategoryRepository Category { get; }
+        IProductRepository Product { get; }
 
         // Global methods
         void Save();
