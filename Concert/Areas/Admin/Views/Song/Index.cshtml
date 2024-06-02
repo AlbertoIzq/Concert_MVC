@@ -1,18 +1,18 @@
-﻿@model List<Product>
+﻿@model List<Song>
 
 <div class="card shadow border-0 mt-4">
     <div class="card-header bg-secondary bg-gradient ml-0 py-3">
         <div class="row">
             <div class="col-12 text-center">
-                <h2 class="text-white py-2">Product List</h2>
+                <h2 class="text-white py-2">Song List</h2>
             </div>
         </div>
     </div>
     <div class="card-body p-4">
         <div class="row pb-4">
             <div class="col-12 text-end">
-                <a asp-area="Admin" asp-controller="Product" asp-action="Create" class="btn btn-primary">
-                    <i class="bi bi-plus-square"></i> Create new Product
+                <a asp-area="Admin" asp-controller="Song" asp-action="Create" class="btn btn-primary">
+                    <i class="bi bi-plus-square"></i> Create new Song
                 </a>
             </div>
         </div>
@@ -44,10 +44,10 @@
                         <td>@obj.ReleaseYear</td>
                         <td>
                             <div class="w-50 btn-group" role="group">
-                                <a asp-area="Admin" asp-controller="Product" asp-action="Edit" asp-route-id="@obj.Id" class="btn btn-primary mx-1">
+                                <a asp-area="Admin" asp-controller="Song" asp-action="Edit" asp-route-id="@obj.Id" class="btn btn-primary mx-1">
                                     <i class="bi bi-pencil-square"></i> Edit
                                 </a>
-                                <a asp-area="Admin" asp-controller="Product" asp-action="Delete" asp-route-id="@obj.Id" class="btn btn-danger mx-1">
+                                <a asp-area="Admin" asp-controller="Song" asp-action="Delete" asp-route-id="@obj.Id" class="btn btn-danger mx-1">
                                     <i class="bi bi-trash3"></i> Delete
                                 </a>
                             </div>

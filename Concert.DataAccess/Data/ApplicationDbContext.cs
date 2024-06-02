@@ -13,10 +13,10 @@ namespace Concert.DataAccess.Data
 
         // To create a table for Genre data model
         public DbSet<Genre> Genres { get; set; }
-        /*
-        // To create a table for Product data model
-        public DbSet<Product> Products { get; set; }
-        */
+        
+        // To create a table for Song data model
+        public DbSet<Song> Songs { get; set; }
+        
         // To seed Genre table with some data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -25,9 +25,9 @@ namespace Concert.DataAccess.Data
                 new Genre() { Id = 2, Name = "Disco polo", DisplayOrder = 2 },
                 new Genre() { Id = 3, Name = "Reggae", DisplayOrder = 3 }
             );
-            /*
-            modelBuilder.Entity<Product>().HasData(
-                new Product()
+            
+            modelBuilder.Entity<Song>().HasData(
+                new Song()
                 {
                     Id = 1,
                     Artist = "Ace of base",
@@ -35,7 +35,7 @@ namespace Concert.DataAccess.Data
                     Length = new TimeSpan(0, 2, 6),
                     ReleaseYear = 1992
                 },
-                new Product()
+                new Song()
                 {
                     Id = 2,
                     Artist = "And one",
@@ -43,7 +43,7 @@ namespace Concert.DataAccess.Data
                     Length = new TimeSpan(0, 2, 19),
                     ReleaseYear = 2006
                 },
-                new Product()
+                new Song()
                 {
                     Id = 3,
                     Artist = "Boys",
@@ -52,7 +52,6 @@ namespace Concert.DataAccess.Data
                     ReleaseYear = 1997
                 }
             );
-            */
         }
     }
 }

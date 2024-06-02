@@ -6,20 +6,20 @@ using Microsoft.AspNetCore.Mvc;
 namespace ConcertWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class ProductController : Controller
+    public class SongController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public ProductController(IUnitOfWork unitOfWork)
+        public SongController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
 
         public IActionResult Index()
         {
-            List<Product> objProductList = _unitOfWork.Product.GetAll().ToList();
+            List<Song> objSongList = _unitOfWork.Song.GetAll().ToList();
 
-            return View(objProductList);
+            return View(objSongList);
         }
 
         public IActionResult Create()
@@ -28,15 +28,15 @@ namespace ConcertWeb.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Product obj)
+        public IActionResult Create(Song obj)
         {
-            ValidateProduct(obj);
+            ValidateSong(obj);
 
             if (ModelState.IsValid)
             {
-                _unitOfWork.Product.Add(obj);
+                _unitOfWork.Song.Add(obj);
                 _unitOfWork.Save();
-                TempData["success"] = "Product created successfully";
+                TempData["success"] = "Song created successfully";
                 return RedirectToAction("Index");
             }
             return View();
@@ -49,26 +49,26 @@ namespace ConcertWeb.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            Product? productFromDb = _unitOfWork.Product.Get(u => u.Id == id);
+            Song? songFromDb = _unitOfWork.Song.Get(u => u.Id == id);
 
-            if (productFromDb == null)
+            if (songFromDb == null)
             {
                 return NotFound();
             }
 
-            return View(productFromDb);
+            return View(songFromDb);
         }
 
         [HttpPost]
-        public IActionResult Edit(Product obj)
+        public IActionResult Edit(Song obj)
         {
-            ValidateProduct(obj);
+            ValidateSong(obj);
 
             if (ModelState.IsValid)
             {
-                _unitOfWork.Product.Update(obj);
+                _unitOfWork.Song.Update(obj);
                 _unitOfWork.Save();
-                TempData["success"] = "Product updated successfully";
+                TempData["success"] = "Song updated successfully";
                 return RedirectToAction("Index");
             }
             return View();
@@ -81,40 +81,40 @@ namespace ConcertWeb.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            Product? productFromDb = _unitOfWork.Product.Get(u => u.Id == id);
+            Song? songFromDb = _unitOfWork.Song.Get(u => u.Id == id);
 
-            if (productFromDb == null)
+            if (songFromDb == null)
             {
                 return NotFound();
             }
 
-            return View(productFromDb);
+            return View(songFromDb);
         }
 
         [HttpPost, ActionName("Delete")]
         public IActionResult DeletePOST(int? id)
         {
-            Product? obj = _unitOfWork.Product.Get(u => u.Id == id);
+            Song? obj = _unitOfWork.Song.Get(u => u.Id == id);
 
             if (obj == null)
             {
                 return NotFound();
             }
 
-            _unitOfWork.Product.Remove(obj);
+            _unitOfWork.Song.Remove(obj);
             _unitOfWork.Save();
-            TempData["success"] = "Product deleted successfully";
+            TempData["success"] = "Song deleted successfully";
             return RedirectToAction("Index");
         }
 
-        private void ValidateProduct(Product product)
+        private void ValidateSong(Song song)
         {   
-            if (char.IsAsciiLetterLower(product.Artist.ElementAt(0)))
+            if (char.IsAsciiLetterLower(song.Artist.ElementAt(0)))
             {
                 ModelState.AddModelError("artist", "The Artist Name must start with a capital letter.");
             }
 
-            if (char.IsAsciiLetterLower(product.Title.ElementAt(0)))
+            if (char.IsAsciiLetterLower(song.Title.ElementAt(0)))
             {
                 ModelState.AddModelError("title", "The Song Title must start with a capital letter.");
             }

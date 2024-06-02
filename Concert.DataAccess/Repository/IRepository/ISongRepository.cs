@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Concert.DataAccess.Repository.IRepository
 {
-    public interface IProductRepository : IRepository<Product>
+    public interface ISongRepository : IRepository<Song>
     {
-        void Update(Product obj);
+        void Update(Song obj);
     }
 }

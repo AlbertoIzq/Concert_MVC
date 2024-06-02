@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Concert.Models
 {
-    public class Product
+    public class Song
     {
         [Key]
         public int Id { get; set; }

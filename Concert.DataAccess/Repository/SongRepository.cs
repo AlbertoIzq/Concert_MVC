@@ -10,18 +10,18 @@ using System.Threading.Tasks;
 
 namespace Concert.DataAccess.Repository
 {
-    public class ProductRepository : Repository<Product>, IProductRepository
+    public class SongRepository : Repository<Song>, ISongRepository
     {
         private ApplicationDbContext _db;
 
-        public ProductRepository(ApplicationDbContext db) : base(db)
+        public SongRepository(ApplicationDbContext db) : base(db)
         {
             _db = db;
         }
 
-        public void Update(Product obj)
+        public void Update(Song obj)
         {
-            //_db.Products.Update(obj);
+            _db.Songs.Update(obj);
         }
     }
 }
