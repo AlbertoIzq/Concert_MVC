@@ -32,6 +32,8 @@ namespace Concert.Models
         [ForeignKey("GenreId")]
         public Genre Genre { get; set; }
         
+        public string ImageUrl { get; set; }
+
         /*
         // TODO because these properties are linked with other models        
         [MaxLength(30)]

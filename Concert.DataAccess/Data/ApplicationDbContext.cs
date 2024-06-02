@@ -34,7 +34,8 @@ namespace Concert.DataAccess.Data
                     Title = "All that she wants",
                     Length = new TimeSpan(0, 2, 6),
                     ReleaseYear = 1992,
-                    GenreId = 3
+                    GenreId = 3,
+                    ImageUrl = ""
                 },
                 new Song()
                 {
@@ -43,7 +44,8 @@ namespace Concert.DataAccess.Data
                     Title = "Military fashion show",
                     Length = new TimeSpan(0, 2, 19),
                     ReleaseYear = 2006,
-                    GenreId = 2
+                    GenreId = 2,
+                    ImageUrl = ""
                 },
                 new Song()
                 {
@@ -52,7 +54,8 @@ namespace Concert.DataAccess.Data
                     Title = "Szalona",
                     Length = new TimeSpan(0, 2, 52),
                     ReleaseYear = 1997,
-                    GenreId = 1
+                    GenreId = 1,
+                    ImageUrl = ""
                 }
             );
         }
