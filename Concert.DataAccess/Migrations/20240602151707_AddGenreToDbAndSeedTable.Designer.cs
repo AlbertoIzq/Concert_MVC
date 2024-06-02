@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Concert.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240602144600_AddGenreToDbAndSeedTable")]
+    [Migration("20240602151707_AddGenreToDbAndSeedTable")]
     partial class AddGenreToDbAndSeedTable
     {
         /// <inheritdoc />
@@ -49,13 +49,13 @@ namespace Concert.DataAccess.Migrations
                         {
                             Id = 1,
                             DisplayOrder = 1,
-                            Name = "Chanson française"
+                            Name = "Disco polo"
                         },
                         new
                         {
                             Id = 2,
                             DisplayOrder = 2,
-                            Name = "Disco polo"
+                            Name = "EBM"
                         },
                         new
                         {

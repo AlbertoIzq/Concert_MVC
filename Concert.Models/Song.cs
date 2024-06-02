@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Concert.Models
 {
@@ -27,12 +28,12 @@ namespace Concert.Models
         [DisplayName("Release Year")]
         public int ReleaseYear { get; set; }
         
-        /*
-        // TODO because these properties are linked with other models
-        [MaxLength(30)]
-        [DisplayName("Music Genre")]
-        public string Genre { get; set; }
+        public int GenreId { get; set; }
+        [ForeignKey("GenreId")]
+        public Genre Genre { get; set; }
         
+        /*
+        // TODO because these properties are linked with other models        
         [MaxLength(30)]
         public string Language { get; set; }
         */

@@ -31,8 +31,8 @@ namespace Concert.DataAccess.Migrations
                 columns: new[] { "Id", "DisplayOrder", "Name" },
                 values: new object[,]
                 {
-                    { 1, 1, "Chanson française" },
-                    { 2, 2, "Disco polo" },
+                    { 1, 1, "Disco polo" },
+                    { 2, 2, "EBM" },
                     { 3, 3, "Reggae" }
                 });
         }

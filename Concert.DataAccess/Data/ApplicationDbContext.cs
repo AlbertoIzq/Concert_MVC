@@ -21,8 +21,8 @@ namespace Concert.DataAccess.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Genre>().HasData(
-                new Genre() { Id = 1, Name = "Chanson française", DisplayOrder = 1 },
-                new Genre() { Id = 2, Name = "Disco polo", DisplayOrder = 2 },
+                new Genre() { Id = 1, Name = "Disco polo", DisplayOrder = 1 },
+                new Genre() { Id = 2, Name = "EBM", DisplayOrder = 2 },
                 new Genre() { Id = 3, Name = "Reggae", DisplayOrder = 3 }
             );
             
@@ -33,7 +33,8 @@ namespace Concert.DataAccess.Data
                     Artist = "Ace of base",
                     Title = "All that she wants",
                     Length = new TimeSpan(0, 2, 6),
-                    ReleaseYear = 1992
+                    ReleaseYear = 1992,
+                    GenreId = 3
                 },
                 new Song()
                 {
@@ -41,7 +42,8 @@ namespace Concert.DataAccess.Data
                     Artist = "And one",
                     Title = "Military fashion show",
                     Length = new TimeSpan(0, 2, 19),
-                    ReleaseYear = 2006
+                    ReleaseYear = 2006,
+                    GenreId = 2
                 },
                 new Song()
                 {
@@ -49,7 +51,8 @@ namespace Concert.DataAccess.Data
                     Artist = "Boys",
                     Title = "Szalona",
                     Length = new TimeSpan(0, 2, 52),
-                    ReleaseYear = 1997
+                    ReleaseYear = 1997,
+                    GenreId = 1
                 }
             );
         }

@@ -32,6 +32,9 @@
                     <th>
                         Release Year
                     </th>
+                    <th>
+                        Music Genre
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -42,6 +45,7 @@
                         <td>@obj.Title</td>
                         <td>@obj.Length</td>
                         <td>@obj.ReleaseYear</td>
+                        <td>@obj.Genre</td>
                         <td>
                             <div class="w-50 btn-group" role="group">
                                 <a asp-area="Admin" asp-controller="Song" asp-action="Edit" asp-route-id="@obj.Id" class="btn btn-primary mx-1">

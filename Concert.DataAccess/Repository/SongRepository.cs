@@ -21,7 +21,7 @@ namespace Concert.DataAccess.Repository
 
         public void Update(Song obj)
         {
-            _db.Songs.Update(obj);
+            //_db.Songs.Update(obj);
         }
     }
 }
