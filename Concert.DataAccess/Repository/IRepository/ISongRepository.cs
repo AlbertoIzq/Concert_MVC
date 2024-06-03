@@ -9,6 +9,6 @@ namespace Concert.DataAccess.Repository.IRepository
 {
     public interface ISongRepository : IRepository<Song>
     {
-        void Update(Song obj);
+        void Update(Song song);
     }
 }

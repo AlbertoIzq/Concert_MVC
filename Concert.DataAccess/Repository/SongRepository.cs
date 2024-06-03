@@ -19,9 +19,9 @@ namespace Concert.DataAccess.Repository
             _db = db;
         }
 
-        public void Update(Song obj)
+        public void Update(Song song)
         {
-            _db.Songs.Update(obj);
+            _db.Songs.Update(song);
         }
     }
 }

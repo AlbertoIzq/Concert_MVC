@@ -17,9 +17,9 @@ namespace ConcertWeb.Areas.Admin.Controllers
 
         public IActionResult Index()
         {
-            List<Genre> objGenreList = _unitOfWork.Genre.GetAll().ToList();
+            List<Genre> genreList = _unitOfWork.Genre.GetAll().ToList();
 
-            return View(objGenreList);
+            return View(genreList);
         }
 
         public IActionResult Create()
@@ -28,13 +28,13 @@ namespace ConcertWeb.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Genre obj)
+        public IActionResult Create(Genre genre)
         {
-            ValidateGenre(obj);
+            ValidateGenre(genre);
 
             if (ModelState.IsValid)
             {
-                _unitOfWork.Genre.Add(obj);
+                _unitOfWork.Genre.Add(genre);
                 _unitOfWork.Save();
                 TempData["success"] = "Genre created successfully";
                 return RedirectToAction("Index");
@@ -60,13 +60,13 @@ namespace ConcertWeb.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(Genre obj)
+        public IActionResult Edit(Genre genre)
         {
-            ValidateGenre(obj);
+            ValidateGenre(genre);
 
             if (ModelState.IsValid)
             {
-                _unitOfWork.Genre.Update(obj);
+                _unitOfWork.Genre.Update(genre);
                 _unitOfWork.Save();
                 TempData["success"] = "Genre updated successfully";
                 return RedirectToAction("Index");
@@ -94,14 +94,14 @@ namespace ConcertWeb.Areas.Admin.Controllers
         [HttpPost, ActionName("Delete")]
         public IActionResult DeletePOST(int? id)
         {
-            Genre? obj = _unitOfWork.Genre.Get(u => u.Id == id);
+            Genre? genre = _unitOfWork.Genre.Get(u => u.Id == id);
 
-            if (obj == null)
+            if (genre == null)
             {
                 return NotFound();
             }
 
-            _unitOfWork.Genre.Remove(obj);
+            _unitOfWork.Genre.Remove(genre);
             _unitOfWork.Save();
             TempData["success"] = "Genre deleted successfully";
             return RedirectToAction("Index");

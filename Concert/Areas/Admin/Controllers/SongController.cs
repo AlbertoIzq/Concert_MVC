@@ -21,9 +21,9 @@ namespace ConcertWeb.Areas.Admin.Controllers
 
         public IActionResult Index()
         {
-            List<Song> objSongList = _unitOfWork.Song.GetAll().ToList();
+            List<Song> songList = _unitOfWork.Song.GetAll().ToList();
 
-            return View(objSongList);
+            return View(songList);
         }
 
         // Upsert = Update + Insert(Edit)
@@ -140,14 +140,14 @@ namespace ConcertWeb.Areas.Admin.Controllers
         [HttpPost, ActionName("Delete")]
         public IActionResult DeletePOST(int? id)
         {
-            Song? obj = _unitOfWork.Song.Get(u => u.Id == id);
+            Song? song = _unitOfWork.Song.Get(u => u.Id == id);
 
-            if (obj == null)
+            if (song == null)
             {
                 return NotFound();
             }
 
-            _unitOfWork.Song.Remove(obj);
+            _unitOfWork.Song.Remove(song);
             _unitOfWork.Save();
             TempData["success"] = "Song deleted successfully";
             return RedirectToAction("Index");
