@@ -1,7 +1,7 @@
 ﻿<!-- It creates a new Genre object -->
 @model Genre
 
-<div class="card shadow border-0 mt-4">
+<div class="card shadow border-0 my-4">
     <div class="card-header bg-secondary bg-gradient ml-0 py-3">
         <div class="row">
             <div class="col-12 text-center">
@@ -11,7 +11,7 @@
     </div>
     <div class="card-body p-4">
         <form method="post" class="row">
-            @*This is a comment*@<input asp-for="Id" hidden />
+            <input asp-for="Id" hidden />
             <div class="border p-3 mt-4">
                 <div class="form-floating py-2 col-12">
                     <input asp-for="Name" disabled class="form-control border-0 shadow" />
