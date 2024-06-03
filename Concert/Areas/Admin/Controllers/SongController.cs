@@ -24,7 +24,8 @@ namespace ConcertWeb.Areas.Admin.Controllers
             return View(objSongList);
         }
 
-        public IActionResult Create()
+        // Upsert = Update + Insert(Edit)
+        public IActionResult Upsert(int? id)
         {
             SongVM songVM = new()
             {
@@ -36,20 +37,39 @@ namespace ConcertWeb.Areas.Admin.Controllers
                 Song = new Song()
             };
 
+            // Update, otherwise is Create
+            if (id != null && id != 0)
+            {
+                songVM.Song = _unitOfWork.Song.Get(u => u.Id == id);
+
+                if (songVM.Song == null)
+                {
+                    return NotFound();
+                }
+            }
+
             return View(songVM);
         }
 
         [HttpPost]
-        public IActionResult Create(SongVM songVM)
+        public IActionResult Upsert(SongVM songVM, IFormFile? file)
         {
             ValidateSong(songVM.Song);
 
             if (ModelState.IsValid)
             {
+                // Create
                 _unitOfWork.Song.Add(songVM.Song);
                 _unitOfWork.Save();
                 TempData["success"] = "Song created successfully";
                 return RedirectToAction("Index");
+
+                /* // Update
+                _unitOfWork.Song.Update(songVM.Song);
+                _unitOfWork.Save();
+                TempData["success"] = "Song updated successfully";
+                return RedirectToAction("Index");
+                 */
             }
             else
             {
@@ -60,38 +80,6 @@ namespace ConcertWeb.Areas.Admin.Controllers
                 });
                 return View(songVM);
             }
-        }
-
-        public IActionResult Edit(int? id)
-        {
-            if (id == null || id == 0)
-            {
-                return NotFound();
-            }
-
-            Song? songFromDb = _unitOfWork.Song.Get(u => u.Id == id);
-
-            if (songFromDb == null)
-            {
-                return NotFound();
-            }
-
-            return View(songFromDb);
-        }
-
-        [HttpPost]
-        public IActionResult Edit(SongVM songVM)
-        {
-            ValidateSong(songVM.Song);
-
-            if (ModelState.IsValid)
-            {
-                _unitOfWork.Song.Update(songVM.Song);
-                _unitOfWork.Save();
-                TempData["success"] = "Song updated successfully";
-                return RedirectToAction("Index");
-            }
-            return View();
         }
 
         public IActionResult Delete(int? id)
