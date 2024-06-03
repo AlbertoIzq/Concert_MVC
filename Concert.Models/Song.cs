@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -30,8 +31,10 @@ namespace Concert.Models
         
         public int GenreId { get; set; }
         [ForeignKey("GenreId")]
+        [ValidateNever]
         public Genre Genre { get; set; }
-        
+
+        [ValidateNever]
         public string ImageUrl { get; set; }
 
         /*

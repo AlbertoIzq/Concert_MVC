@@ -1,5 +1,5 @@
 ﻿<!-- It creates a new Song object -->
-@model Song
+@model SongVM
 
 <div class="card shadow border-0 mt-4">
     <div class="card-header bg-secondary bg-gradient ml-0 py-3">
@@ -13,24 +13,36 @@
         <form method="post" class="row">
             <div class="border p-3">
                 <div class="form-floating py-2 col-12">
-                    <input asp-for="Artist" class="form-control border-0 shadow" />
-                    <label asp-for="Artist" class="ms-2"></label>
-                    <span asp-validation-for="Artist" class="text-danger"></span>
+                    <input asp-for="Song.Artist" class="form-control border-0 shadow" />
+                    <label asp-for="Song.Artist" class="ms-2"></label>
+                    <span asp-validation-for="Song.Artist" class="text-danger"></span>
                 </div>
                 <div class="form-floating py-2 col-12">
-                    <input asp-for="Title" class="form-control border-0 shadow" />
-                    <label asp-for="Title" class="ms-2"></label>
-                    <span asp-validation-for="Title" class="text-danger"></span>
+                    <input asp-for="Song.Title" class="form-control border-0 shadow" />
+                    <label asp-for="Song.Title" class="ms-2"></label>
+                    <span asp-validation-for="Song.Title" class="text-danger"></span>
                 </div>
                 <div class="form-floating py-2 col-12">
-                    <input asp-for="Length" class="form-control border-0 shadow" />
-                    <label asp-for="Length" class="ms-2"></label>
-                    <span asp-validation-for="Length" class="text-danger"></span>
+                    <input asp-for="Song.Length" class="form-control border-0 shadow" />
+                    <label asp-for="Song.Length" class="ms-2"></label>
+                    <span asp-validation-for="Song.Length" class="text-danger"></span>
                 </div>
                 <div class="form-floating py-2 col-12">
-                    <input asp-for="ReleaseYear" class="form-control border-0 shadow" />
-                    <label asp-for="ReleaseYear" class="ms-2"></label>
-                    <span asp-validation-for="ReleaseYear" class="text-danger"></span>
+                    <input asp-for="Song.ReleaseYear" class="form-control border-0 shadow" />
+                    <label asp-for="Song.ReleaseYear" class="ms-2"></label>
+                    <span asp-validation-for="Song.ReleaseYear" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="Song.ImageUrl" class="form-control border-0 shadow" />
+                    <label asp-for="Song.ImageUrl" class="ms-2"></label>
+                    <span asp-validation-for="Song.ImageUrl" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-2 col-12">
+                    <select asp-for="Song.GenreId" asp-items=@Model.GenreList class="form-select border-0 shadow">
+                        <option disable selected>--Select Music Genre--</option>
+                    </select>
+                    <label asp-for="Song.GenreId" class="ms-2"></label>
+                    <span asp-validation-for="Song.GenreId" class="text-danger"></span>
                 </div>
                 <div class="row pt-2">
                     <div class="col-6 col-md-3">

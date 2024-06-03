@@ -1,7 +1,9 @@
 ﻿using Concert.DataAccess.Data;
 using Concert.DataAccess.Repository.IRepository;
 using Concert.Models;
+using Concert.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ConcertWeb.Areas.Admin.Controllers
 {
@@ -24,22 +26,40 @@ namespace ConcertWeb.Areas.Admin.Controllers
 
         public IActionResult Create()
         {
-            return View();
+            SongVM songVM = new()
+            {
+                GenreList = _unitOfWork.Genre.GetAll().Select(u => new SelectListItem()
+                {
+                    Text = u.Name,
+                    Value = u.Id.ToString()
+                }),
+                Song = new Song()
+            };
+
+            return View(songVM);
         }
 
         [HttpPost]
-        public IActionResult Create(Song obj)
+        public IActionResult Create(SongVM songVM)
         {
-            ValidateSong(obj);
+            ValidateSong(songVM.Song);
 
             if (ModelState.IsValid)
             {
-                _unitOfWork.Song.Add(obj);
+                _unitOfWork.Song.Add(songVM.Song);
                 _unitOfWork.Save();
                 TempData["success"] = "Song created successfully";
                 return RedirectToAction("Index");
             }
-            return View();
+            else
+            {
+                songVM.GenreList = _unitOfWork.Genre.GetAll().Select(u => new SelectListItem()
+                {
+                    Text = u.Name,
+                    Value = u.Id.ToString()
+                });
+                return View(songVM);
+            }
         }
 
         public IActionResult Edit(int? id)
@@ -60,13 +80,13 @@ namespace ConcertWeb.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(Song obj)
+        public IActionResult Edit(SongVM songVM)
         {
-            ValidateSong(obj);
+            ValidateSong(songVM.Song);
 
             if (ModelState.IsValid)
             {
-                _unitOfWork.Song.Update(obj);
+                _unitOfWork.Song.Update(songVM.Song);
                 _unitOfWork.Save();
                 TempData["success"] = "Song updated successfully";
                 return RedirectToAction("Index");
