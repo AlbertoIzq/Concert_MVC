@@ -21,7 +21,7 @@ namespace ConcertWeb.Areas.Admin.Controllers
 
         public IActionResult Index()
         {
-            List<Song> songList = _unitOfWork.Song.GetAll().ToList();
+            List<Song> songList = _unitOfWork.Song.GetAll(includeProperties:"Genre").ToList();
 
             return View(songList);
         }

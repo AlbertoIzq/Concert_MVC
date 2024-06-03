@@ -45,7 +45,7 @@
                         <td>@song.Title</td>
                         <td>@song.Length</td>
                         <td>@song.ReleaseYear</td>
-                        <td>@song.Genre</td>
+                        <td>@song.Genre.Name</td>
                         <td>
                             <div class="w-50 btn-group" role="group">
                                 <a asp-area="Admin" asp-controller="Song" asp-action="Upsert" asp-route-id="@song.Id" class="btn btn-primary mx-1">

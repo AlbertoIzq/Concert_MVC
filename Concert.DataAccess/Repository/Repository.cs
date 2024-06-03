@@ -7,6 +7,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Concert.DataAccess.Repository
 {
@@ -27,16 +28,22 @@ namespace Concert.DataAccess.Repository
             dbSet.Add(entity);
         }
 
-        public T Get(Expression<Func<T, bool>> filter)
+        public T Get(Expression<Func<T, bool>> filter, string? includeProperties = null)
         {
             IQueryable<T> query = dbSet;
             query = query.Where(filter);
+
+            query = IncludeProperties(query, includeProperties);
+
             return query.FirstOrDefault();
         }
 
-        public IEnumerable<T> GetAll()
+        public IEnumerable<T> GetAll(string? includeProperties = null)
         {
             IQueryable<T> query = dbSet;
+
+            query = IncludeProperties(query, includeProperties);
+
             return query.ToList();
         }
 
@@ -48,6 +55,22 @@ namespace Concert.DataAccess.Repository
         public void RemoveRange(IEnumerable<T> entities)
         {
             dbSet.RemoveRange(entities);
+        }
+
+        // Used to populate properties based in a ForeignKey relation
+        // includeProperties can contain multiple properties separated by a comma e.g. "Category,Language"
+        private IQueryable<T> IncludeProperties(IQueryable<T> query, string? includeProperties = null)
+        {
+            if (!string.IsNullOrEmpty(includeProperties))
+            {
+                foreach (var includeProp in includeProperties.
+                    Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProp);
+                }
+            }
+
+            return query;
         }
     }
 }
