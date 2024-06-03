@@ -12,61 +12,66 @@
     <div class="card-body p-4">
         <form method="post" class="row" enctype="multipart/form-data">
             <input asp-for="Song.Id" hidden />
-            <div class="border p-3">
-                <div class="form-floating py-2 col-12">
-                    <input asp-for="Song.Artist" class="form-control border-0 shadow" />
-                    <label asp-for="Song.Artist" class="ms-2"></label>
-                    <span asp-validation-for="Song.Artist" class="text-danger"></span>
-                </div>
-                <div class="form-floating py-2 col-12">
-                    <input asp-for="Song.Title" class="form-control border-0 shadow" />
-                    <label asp-for="Song.Title" class="ms-2"></label>
-                    <span asp-validation-for="Song.Title" class="text-danger"></span>
-                </div>
-                <div class="form-floating py-2 col-12">
-                    <input asp-for="Song.Length" class="form-control border-0 shadow" />
-                    <label asp-for="Song.Length" class="ms-2"></label>
-                    <span asp-validation-for="Song.Length" class="text-danger"></span>
-                </div>
-                <div class="form-floating py-2 col-12">
-                    <input asp-for="Song.ReleaseYear" class="form-control border-0 shadow" />
-                    <label asp-for="Song.ReleaseYear" class="ms-2"></label>
-                    <span asp-validation-for="Song.ReleaseYear" class="text-danger"></span>
-                </div>
-                <div class="form-floating py-2 col-12">
-                    <select asp-for="Song.GenreId" asp-items=@Model.GenreList class="form-select border-0 shadow">
-                        <option disable selected>--Select Music Genre--</option>
-                    </select>
-                    <label asp-for="Song.GenreId" class="ms-2"></label>
-                    <span asp-validation-for="Song.GenreId" class="text-danger"></span>
-                </div>
-                <div class="form-floating py-2 col-12">
-                    <input type="file" name="file" class="form-control border-0 shadow" />
-                    <label asp-for="Song.ImageUrl" class="ms-2"></label>
-                    <span asp-validation-for="Song.ImageUrl" class="text-danger"></span>
-                </div>
-                <div class="row pt-2">
-                    <div class="col-6 col-md-3">
-                        @{
-                            string butonText = Model.Song.Id != 0 ? "Update" : "Create";
-                            if (Model.Song.Id != 0)
-                            {
-
-                            }
-                            else
-                            {
-                                
-                            }
-                            <button type="submit" class="btn btn-primary form-control">@butonText</button>
-                        }
+            <div class="row">
+                @{
+                    string divClassForm = Model.Song.Id != 0 ? "col-10" : "col-12";
+                    string divClassImage = Model.Song.Id != 0 ? "col-2" : "col-0";
+                }
+                <div class="@divClassForm">
+                    <div class="border p-3">
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="Song.Artist" class="form-control border-0 shadow" />
+                            <label asp-for="Song.Artist" class="ms-2"></label>
+                            <span asp-validation-for="Song.Artist" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="Song.Title" class="form-control border-0 shadow" />
+                            <label asp-for="Song.Title" class="ms-2"></label>
+                            <span asp-validation-for="Song.Title" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="Song.Length" class="form-control border-0 shadow" />
+                            <label asp-for="Song.Length" class="ms-2"></label>
+                            <span asp-validation-for="Song.Length" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating py-2 col-12">
+                            <input asp-for="Song.ReleaseYear" class="form-control border-0 shadow" />
+                            <label asp-for="Song.ReleaseYear" class="ms-2"></label>
+                            <span asp-validation-for="Song.ReleaseYear" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating py-2 col-12">
+                            <select asp-for="Song.GenreId" asp-items=@Model.GenreList class="form-select border-0 shadow">
+                                <option disable selected>--Select Music Genre--</option>
+                            </select>
+                            <label asp-for="Song.GenreId" class="ms-2"></label>
+                            <span asp-validation-for="Song.GenreId" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating py-2 col-12">
+                            <input type="file" name="file" class="form-control border-0 shadow" />
+                            <label asp-for="Song.ImageUrl" class="ms-2"></label>
+                            <span asp-validation-for="Song.ImageUrl" class="text-danger"></span>
+                        </div>
+                        <div class="row pt-2">
+                            <div class="col-6 col-md-3">
+                                @{
+                                    string butonText = Model.Song.Id != 0 ? "Update" : "Create";
+                                }
+                                <button type="submit" class="btn btn-primary form-control">@butonText</button>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <a asp-area="Admin" asp-controller="Song" asp-action="Index" class="btn btn-outline-secondary border form-control">
+                                    Back to List
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-6 col-md-3">
-                        <a asp-area="Admin" asp-controller="Song" asp-action="Index" class="btn btn-outline-secondary border form-control">
-                            Back to List
-                        </a>
-                    </div>
+                </div>
+                <div class="@divClassImage">
+                    <img src="~/@Model.Song.ImageUrl" width="100%"
+                        style="border-radius:5px; border:1px solid #bbb9b9"/>
                 </div>
             </div>
+            
         </form>
     </div>
 </div>
