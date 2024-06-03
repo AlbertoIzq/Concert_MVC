@@ -67,9 +67,22 @@ namespace ConcertWeb.Areas.Admin.Controllers
                 {
                     string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
                     const string internalPath = @"images\song";
-                    string productPath = Path.Combine(wwwRootPath, internalPath);
+                    string songPath = Path.Combine(wwwRootPath, internalPath);
 
-                    using (var fileStream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
+                    // If we upload a new image
+                    if (!string.IsNullOrEmpty(songVM.Song.ImageUrl))
+                    {
+                        // Delete the old image
+                        var oldImagePath = songVM.Song.ImageUrl.TrimStart(Path.PathSeparator);
+                        var oldImageFullPath = Path.Combine(wwwRootPath , oldImagePath);
+
+                        if(System.IO.File.Exists(oldImageFullPath))
+                        {
+                            System.IO.File.Delete(oldImageFullPath);
+                        }
+                    }
+
+                    using (var fileStream = new FileStream(Path.Combine(songPath, fileName), FileMode.Create))
                     {
                         file.CopyTo(fileStream);
                     }
@@ -77,20 +90,27 @@ namespace ConcertWeb.Areas.Admin.Controllers
                     songVM.Song.ImageUrl = Path.Combine(internalPath, fileName);
                 }
 
-                _unitOfWork.Song.Add(songVM.Song);
-                _unitOfWork.Save();
-                TempData["success"] = "Song created successfully";
-                return RedirectToAction("Index");
+                // Create
+                if (songVM.Song.Id == 0) 
+                {
+                    _unitOfWork.Song.Add(songVM.Song);
+                    _unitOfWork.Save();
+                    TempData["success"] = "Song created successfully";
+                }
+                // Update
+                else
+                {
+                    _unitOfWork.Song.Update(songVM.Song);
+                    _unitOfWork.Save();
+                    TempData["success"] = "Song updated successfully";
 
-                /* // Update
-                _unitOfWork.Song.Update(songVM.Song);
-                _unitOfWork.Save();
-                TempData["success"] = "Song updated successfully";
+                }
+                
                 return RedirectToAction("Index");
-                 */
             }
             else
             {
+                // When returning back to the view it expects the dropdown to be populated
                 songVM.GenreList = _unitOfWork.Genre.GetAll().Select(u => new SelectListItem()
                 {
                     Text = u.Name,

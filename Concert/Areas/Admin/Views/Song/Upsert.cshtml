@@ -12,6 +12,7 @@
     <div class="card-body p-4">
         <form method="post" class="row" enctype="multipart/form-data">
             <input asp-for="Song.Id" hidden />
+            <input asp-for="Song.ImageUrl" hidden />
             <div class="row">
                 @{
                     string divClassForm = Model.Song.Id != 0 ? "col-10" : "col-12";
