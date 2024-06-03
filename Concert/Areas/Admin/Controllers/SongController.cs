@@ -11,10 +11,12 @@ namespace ConcertWeb.Areas.Admin.Controllers
     public class SongController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public SongController(IUnitOfWork unitOfWork)
+        public SongController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
         {
             _unitOfWork = unitOfWork;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public IActionResult Index()
@@ -59,6 +61,22 @@ namespace ConcertWeb.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 // Create
+                // Copy uploaded image file and save ImageUrl
+                string wwwRootPath = _webHostEnvironment.WebRootPath;
+                if(file != null)
+                {
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                    const string internalPath = @"images\song";
+                    string productPath = Path.Combine(wwwRootPath, internalPath);
+
+                    using (var fileStream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
+                    {
+                        file.CopyTo(fileStream);
+                    }
+
+                    songVM.Song.ImageUrl = Path.Combine(internalPath, fileName);
+                }
+
                 _unitOfWork.Song.Add(songVM.Song);
                 _unitOfWork.Save();
                 TempData["success"] = "Song created successfully";
