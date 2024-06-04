@@ -73,13 +73,7 @@ namespace ConcertWeb.Areas.Admin.Controllers
                     if (!string.IsNullOrEmpty(songVM.Song.ImageUrl))
                     {
                         // Delete the old image
-                        var oldImagePath = songVM.Song.ImageUrl.TrimStart(Path.PathSeparator);
-                        var oldImageFullPath = Path.Combine(wwwRootPath , oldImagePath);
-
-                        if(System.IO.File.Exists(oldImageFullPath))
-                        {
-                            System.IO.File.Delete(oldImageFullPath);
-                        }
+                        DeleteOldImage(songVM.Song);
                     }
 
                     using (var fileStream = new FileStream(Path.Combine(songPath, fileName), FileMode.Create))
@@ -103,7 +97,6 @@ namespace ConcertWeb.Areas.Admin.Controllers
                     _unitOfWork.Song.Update(songVM.Song);
                     _unitOfWork.Save();
                     TempData["success"] = "Song updated successfully";
-
                 }
                 
                 return RedirectToAction("Index");
@@ -120,39 +113,6 @@ namespace ConcertWeb.Areas.Admin.Controllers
             }
         }
 
-        public IActionResult Delete(int? id)
-        {
-            if (id == null || id == 0)
-            {
-                return NotFound();
-            }
-
-            Song? songFromDb = _unitOfWork.Song.Get(u => u.Id == id);
-
-            if (songFromDb == null)
-            {
-                return NotFound();
-            }
-
-            return View(songFromDb);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        public IActionResult DeletePOST(int? id)
-        {
-            Song? song = _unitOfWork.Song.Get(u => u.Id == id);
-
-            if (song == null)
-            {
-                return NotFound();
-            }
-
-            _unitOfWork.Song.Remove(song);
-            _unitOfWork.Save();
-            TempData["success"] = "Song deleted successfully";
-            return RedirectToAction("Index");
-        }
-
         private void ValidateSong(Song song)
         {   
             if (char.IsAsciiLetterLower(song.Artist.ElementAt(0)))
@@ -166,14 +126,45 @@ namespace ConcertWeb.Areas.Admin.Controllers
             }
         }
 
+        private void DeleteOldImage(Song song)
+        {
+            string wwwRootPath = _webHostEnvironment.WebRootPath;
+
+            // Delete the old image
+            var oldImagePath = song.ImageUrl.TrimStart(Path.PathSeparator);
+            var oldImageFullPath = Path.Combine(wwwRootPath, oldImagePath);
+
+            if (System.IO.File.Exists(oldImageFullPath))
+            {
+                System.IO.File.Delete(oldImageFullPath);
+            }
+        }
+
         #region ApiCalls
 
         [HttpGet]
         public IActionResult GetAll()
         {
             List<Song> songList = _unitOfWork.Song.GetAll(includeProperties: "Genre").ToList();
-
             return Json(new { data = songList });
+        }
+
+        [HttpDelete]
+        public IActionResult Delete(int? id)
+        {
+            Song songToBeDeleted = _unitOfWork.Song.Get(u => u.Id == id);
+            if (songToBeDeleted == null)
+            {
+                return Json(new { success = false, message = "Error while deleting" });
+            }
+
+            // Delete the old image
+            DeleteOldImage(songToBeDeleted);
+
+            _unitOfWork.Song.Remove(songToBeDeleted);
+            _unitOfWork.Save();
+            //TempData["success"] = "Song deleted successfully";
+            return Json(new { success = true, message = "Song deleted successfully" });
         }
 
         #endregion
