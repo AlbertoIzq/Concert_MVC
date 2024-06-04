@@ -165,5 +165,17 @@ namespace ConcertWeb.Areas.Admin.Controllers
                 ModelState.AddModelError("title", "The Song Title must start with a capital letter.");
             }
         }
+
+        #region ApiCalls
+
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            List<Song> songList = _unitOfWork.Song.GetAll(includeProperties: "Genre").ToList();
+
+            return Json(new { data = songList });
+        }
+
+        #endregion
     }
 }
