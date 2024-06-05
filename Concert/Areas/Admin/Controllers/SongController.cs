@@ -21,7 +21,7 @@ namespace ConcertWeb.Areas.Admin.Controllers
 
         public IActionResult Index()
         {
-            List<Song> songList = _unitOfWork.Song.GetAll(includeProperties:"Genre").ToList();
+            List<Song> songList = _unitOfWork.Song.GetAll(includeProperties:"Genre,Language").ToList();
 
             return View(songList);
         }
@@ -32,6 +32,11 @@ namespace ConcertWeb.Areas.Admin.Controllers
             SongVM songVM = new()
             {
                 GenreList = _unitOfWork.Genre.GetAll().Select(u => new SelectListItem()
+                {
+                    Text = u.Name,
+                    Value = u.Id.ToString()
+                }),
+                LanguageList = _unitOfWork.Language.GetAll().Select(u => new SelectListItem()
                 {
                     Text = u.Name,
                     Value = u.Id.ToString()
@@ -109,6 +114,11 @@ namespace ConcertWeb.Areas.Admin.Controllers
                     Text = u.Name,
                     Value = u.Id.ToString()
                 });
+                songVM.LanguageList = _unitOfWork.Language.GetAll().Select(u => new SelectListItem()
+                {
+                    Text = u.Name,
+                    Value = u.Id.ToString()
+                });
                 return View(songVM);
             }
         }
@@ -145,7 +155,7 @@ namespace ConcertWeb.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            List<Song> songList = _unitOfWork.Song.GetAll(includeProperties: "Genre").ToList();
+            List<Song> songList = _unitOfWork.Song.GetAll(includeProperties: "Genre,Language").ToList();
             return Json(new { data = songList });
         }
 

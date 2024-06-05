@@ -34,13 +34,12 @@ namespace Concert.Models
         [ValidateNever]
         public Genre Genre { get; set; }
 
+        public int LanguageId { get; set; }
+        [ForeignKey("LanguageId")]
+        [ValidateNever]
+        public Language Language { get; set; }
+
         [ValidateNever]
         public string ImageUrl { get; set; }
-
-        /*
-        // TODO because these properties are linked with other models        
-        [MaxLength(30)]
-        public string Language { get; set; }
-        */
     }
 }
