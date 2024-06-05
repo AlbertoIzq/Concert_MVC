@@ -4,6 +4,7 @@ using Concert.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Concert.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240605095316_AddLanguageToDbAndSeedTable")]
+    partial class AddLanguageToDbAndSeedTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -124,9 +127,6 @@ namespace Concert.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("LanguageId")
-                        .HasColumnType("int");
-
                     b.Property<TimeSpan>("Length")
                         .HasColumnType("time");
 
@@ -142,8 +142,6 @@ namespace Concert.DataAccess.Migrations
 
                     b.HasIndex("GenreId");
 
-                    b.HasIndex("LanguageId");
-
                     b.ToTable("Songs");
 
                     b.HasData(
@@ -153,7 +151,6 @@ namespace Concert.DataAccess.Migrations
                             Artist = "Ace of base",
                             GenreId = 3,
                             ImageUrl = "",
-                            LanguageId = 1,
                             Length = new TimeSpan(0, 0, 2, 6, 0),
                             ReleaseYear = 1992,
                             Title = "All that she wants"
@@ -164,7 +161,6 @@ namespace Concert.DataAccess.Migrations
                             Artist = "And one",
                             GenreId = 2,
                             ImageUrl = "",
-                            LanguageId = 1,
                             Length = new TimeSpan(0, 0, 2, 19, 0),
                             ReleaseYear = 2006,
                             Title = "Military fashion show"
@@ -175,7 +171,6 @@ namespace Concert.DataAccess.Migrations
                             Artist = "Boys",
                             GenreId = 1,
                             ImageUrl = "",
-                            LanguageId = 3,
                             Length = new TimeSpan(0, 0, 2, 52, 0),
                             ReleaseYear = 1997,
                             Title = "Szalona"
@@ -190,15 +185,7 @@ namespace Concert.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Concert.Models.Language", "Language")
-                        .WithMany()
-                        .HasForeignKey("LanguageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Genre");
-
-                    b.Navigation("Language");
                 });
 #pragma warning restore 612, 618
         }

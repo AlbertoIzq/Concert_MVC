@@ -13,12 +13,14 @@ namespace Concert.DataAccess.Repository
         private ApplicationDbContext _db;
 
         public IGenreRepository Genre { get; private set; }
+        public ILanguageRepository Language { get; private set; }
         public ISongRepository Song { get; private set; }
 
         public UnitOfWork(ApplicationDbContext db)
         {
             _db = db;
             Genre = new GenreRepository(_db);
+            Language = new LanguageRepository(_db);
             Song = new SongRepository(_db);
         }
 

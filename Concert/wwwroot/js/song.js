@@ -8,11 +8,12 @@ function loadDataTable() {
     dataTable = $('#tableData').DataTable({
         "ajax": { url: '/admin/song/getall' },
         "columns": [
-            { data: 'artist', "width": "20%" },
+            { data: 'artist', "width": "15%" },
             { data: 'title', "width": "20%" },
-            { data: 'length', "width": "15%" },
+            { data: 'length', "width": "10%" },
             { data: 'releaseYear', "width": "10%" },
             { data: 'genre.name', "width": "10%" },
+            { data: 'language.name', "width": "10%" },
             {
                 data: 'id',
                 "render": function (data) {

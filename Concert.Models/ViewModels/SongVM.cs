@@ -13,5 +13,7 @@ namespace Concert.Models.ViewModels
         public Song Song { get; set; }
         [ValidateNever]
         public IEnumerable<SelectListItem> GenreList { get; set; }
+        [ValidateNever]
+        public IEnumerable<SelectListItem> LanguageList { get; set; }
     }
 }
