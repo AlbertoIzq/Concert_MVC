@@ -40,6 +40,7 @@ namespace Concert.DataAccess.Data
                     Length = new TimeSpan(0, 2, 6),
                     ReleaseYear = 1992,
                     GenreId = 3,
+                    LanguageId = 1,
                     ImageUrl = ""
                 },
                 new Song()
@@ -50,6 +51,7 @@ namespace Concert.DataAccess.Data
                     Length = new TimeSpan(0, 2, 19),
                     ReleaseYear = 2006,
                     GenreId = 2,
+                    LanguageId = 1,
                     ImageUrl = ""
                 },
                 new Song()
@@ -60,6 +62,7 @@ namespace Concert.DataAccess.Data
                     Length = new TimeSpan(0, 2, 52),
                     ReleaseYear = 1997,
                     GenreId = 1,
+                    LanguageId = 3,
                     ImageUrl = ""
                 }
             );
