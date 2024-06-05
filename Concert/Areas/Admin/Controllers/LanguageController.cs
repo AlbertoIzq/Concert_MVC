@@ -109,7 +109,7 @@ namespace ConcertWeb.Areas.Admin.Controllers
 
         private void ValidateLanguage(Language language)
         {
-            if (language.Name.All(char.IsLetter))
+            if (!language.Name.All(char.IsLetter))
             {
                 ModelState.AddModelError("name", "The Name can contain letters only.");
             }
