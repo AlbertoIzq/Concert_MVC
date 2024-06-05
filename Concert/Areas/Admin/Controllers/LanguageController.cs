@@ -111,7 +111,7 @@ namespace ConcertWeb.Areas.Admin.Controllers
         {
             if (!language.Name.All(char.IsLetter))
             {
-                ModelState.AddModelError("name", "The Name can contain letters only.");
+                ModelState.AddModelError("Name", "The Name can contain letters only.");
             }
         }
     }

@@ -28,17 +28,22 @@ namespace Concert.Models
         [Range(1900, 2100, ErrorMessage = "It must be between 1900 and 2100.")]
         [DisplayName("Release Year")]
         public int ReleaseYear { get; set; }
-        
+
+        [DisplayName("Genre")]
         public int GenreId { get; set; }
+
         [ForeignKey("GenreId")]
         [ValidateNever]
         public Genre Genre { get; set; }
 
+        [DisplayName("Language")]
         public int LanguageId { get; set; }
+
         [ForeignKey("LanguageId")]
         [ValidateNever]
         public Language Language { get; set; }
 
+        [DisplayName("Image Url")]
         [ValidateNever]
         public string ImageUrl { get; set; }
     }

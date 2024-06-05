@@ -61,7 +61,7 @@ namespace ConcertWeb.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult Upsert(SongVM songVM, IFormFile? file)
         {
-            ValidateSong(songVM.Song);
+            ValidateSong(songVM.Song, file);
 
             if (ModelState.IsValid)
             {
@@ -123,16 +123,22 @@ namespace ConcertWeb.Areas.Admin.Controllers
             }
         }
 
-        private void ValidateSong(Song song)
+        private void ValidateSong(Song song, IFormFile? file)
         {   
             if (char.IsAsciiLetterLower(song.Artist.ElementAt(0)))
             {
-                ModelState.AddModelError("artist", "The Artist Name must start with a capital letter.");
+                ModelState.AddModelError("Song.Artist", "The Artist Name must start with a capital letter.");
             }
 
             if (char.IsAsciiLetterLower(song.Title.ElementAt(0)))
             {
-                ModelState.AddModelError("title", "The Song Title must start with a capital letter.");
+                ModelState.AddModelError("Song.Title", "The Song Title must start with a capital letter.");
+            }
+
+            // If we create a song without adding an image or we edit a song that doesn't have an image
+            else if (file == null && song.ImageUrl == null)
+            {
+                ModelState.AddModelError("Song.ImageUrl", "You have to add an image file.");
             }
         }
 
