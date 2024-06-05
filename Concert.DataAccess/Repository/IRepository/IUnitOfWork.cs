@@ -10,6 +10,7 @@ namespace Concert.DataAccess.Repository.IRepository
     {
         // Inside UnitOfWork we’ll have all the repositories
         IGenreRepository Genre { get; }
+        ILanguageRepository Language { get; }
         ISongRepository Song { get; }
 
         // Global methods
