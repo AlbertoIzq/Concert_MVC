@@ -3,10 +3,10 @@
 <div class="row pb-3 mb-5">
     @foreach(var song in Model)
     {
-        <div class="col-lg-3 col-sm-6">
+        <div class="col-sm-6 col-lg-4 col-xl-3">
             <div class="row p-2">
                 <div class="col-12 p-1">
-                    <div class="card border-0 p-3 shadow border-top border-5 rounded">
+                    <div class="card border-0 p-2 shadow border-top border-5 rounded">
                         <img src="@song.ImageUrl" class="card-img-top rounded" />
                         <div class="card-body pb-0">
                             <div class="pl-1">
@@ -23,7 +23,7 @@
                             </div>
                         </div>
                         <div>
-                            <a href="#" class="btn btn-primary bg-gradient border-0 form-control">Details</a>
+                            <a asp-area="Customer" asp-controller="Home" asp-action="Details" asp-route-id="@song.Id" class="btn btn-primary bg-gradient border-0 form-control">Details</a>
                         </div>
                     </div>
                 </div>

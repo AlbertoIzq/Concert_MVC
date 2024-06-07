@@ -24,6 +24,13 @@ namespace ConcertWeb.Areas.Customer.Controllers
             return View(songList);
         }
 
+        public IActionResult Details(int id)
+        {
+            Song song = _unitOfWork.Song.Get(u => u.Id == id, includeProperties: "Genre,Language");
+
+            return View(song);
+        }
+
         public IActionResult Privacy()
         {
             return View();
