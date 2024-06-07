@@ -21,7 +21,7 @@ namespace Concert.Models
         public string Title { get; set; }
 
         [Required(ErrorMessage = "Required field.")]
-        [DisplayName("Song Length")]
+        [DisplayName("Cover Length")]
         public TimeSpan Length { get; set; }
 
         [Required(ErrorMessage = "Required field.")]
