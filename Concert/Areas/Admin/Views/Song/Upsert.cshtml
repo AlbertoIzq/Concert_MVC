@@ -16,7 +16,6 @@
             <div class="row">
                 @{
                     string divClassForm = Model.Song.Id != 0 ? "col-10" : "col-12";
-                    string divClassImage = Model.Song.Id != 0 ? "col-2" : "col-0";
                 }
                 <div class="@divClassForm">
                     <div class="border p-3">
@@ -74,12 +73,16 @@
                         </div>
                     </div>
                 </div>
-                <div class="@divClassImage">
-                    <img src="~/@Model.Song.ImageUrl" width="100%"
-                        style="border-radius:5px; border:1px solid #bbb9b9"/>
-                </div>
+                @{
+                    if (Model.Song.Id != 0)
+                    {
+                        <div class="col-2">
+                            <img src="~/@Model.Song.ImageUrl" width="100%"
+                                 style="border-radius:5px; border:1px solid #bbb9b9" />
+                        </div>
+                    }
+                }
             </div>
-            
         </form>
     </div>
 </div>
