@@ -22,6 +22,9 @@ connectionString = connectionString?.Replace("DatabaseName", databaseName);
 // Add the MVC service.
 builder.Services.AddControllersWithViews();
 
+// Add the Razor Pages service. 
+builder.Services.AddRazorPages();
+
 // Add the database service.
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
@@ -50,6 +53,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",
     pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}");
