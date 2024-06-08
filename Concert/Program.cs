@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using DotEnv.Core;
 using Concert.DataAccess.Repository.IRepository;
 using Concert.DataAccess.Repository;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,9 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
+// Add Identity service
+builder.Services.AddDefaultIdentity<IdentityUser>().AddEntityFrameworkStores<ApplicationDbContext>();
+
 // Add IUnitOfWork service
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -43,6 +47,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

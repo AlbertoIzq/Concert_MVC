@@ -1,9 +1,11 @@
 ﻿using Concert.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace Concert.DataAccess.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -19,6 +21,8 @@ namespace Concert.DataAccess.Data
         // To seed Genre table with some data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Genre>().HasData(
                 new Genre() { Id = 1, Name = "Disco polo", DisplayOrder = 1 },
                 new Genre() { Id = 2, Name = "EBM", DisplayOrder = 2 },
