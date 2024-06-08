@@ -17,6 +17,7 @@ namespace Concert.DataAccess.Data
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Language> Languages { get; set; }
         public DbSet<Song> Songs { get; set; }
+        public DbSet<ApplicationUser> ApplicationUser { get; set; }
         
         // To seed Genre table with some data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
