@@ -4,6 +4,8 @@ using DotEnv.Core;
 using Concert.DataAccess.Repository.IRepository;
 using Concert.DataAccess.Repository;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Concert.Utility;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,10 +32,13 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
 // Add Identity service
-builder.Services.AddDefaultIdentity<IdentityUser>().AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
 
 // Add IUnitOfWork service
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+// Add IEmailSender service
+builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 var app = builder.Build();
 
