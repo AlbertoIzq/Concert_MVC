@@ -2,12 +2,15 @@
 using Concert.DataAccess.Repository.IRepository;
 using Concert.Models;
 using Concert.Models.ViewModels;
+using Concert.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ConcertWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.ROLE_ADMIN)]
     public class SongController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

@@ -1,11 +1,14 @@
 ﻿using Concert.DataAccess.Data;
 using Concert.DataAccess.Repository.IRepository;
 using Concert.Models;
+using Concert.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ConcertWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.ROLE_ADMIN)]
     public class LanguageController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
