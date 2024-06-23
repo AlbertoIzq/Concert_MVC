@@ -1,10 +1,5 @@
 ﻿using Concert.DataAccess.Data;
 using Concert.DataAccess.Repository.IRepository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Concert.DataAccess.Repository
 {
@@ -16,6 +11,7 @@ namespace Concert.DataAccess.Repository
         public ILanguageRepository Language { get; private set; }
         public ISongRepository Song { get; private set; }
         public ICompanyRepository Company { get; private set; }
+        public ISetListRepository SetList { get; private set; }
 
         public UnitOfWork(ApplicationDbContext db)
         {
@@ -24,6 +20,7 @@ namespace Concert.DataAccess.Repository
             Language = new LanguageRepository(_db);
             Song = new SongRepository(_db);
             Company = new CompanyRepository(_db);
+            SetList = new SetListRepository(_db);
         }
 
         public void Save()

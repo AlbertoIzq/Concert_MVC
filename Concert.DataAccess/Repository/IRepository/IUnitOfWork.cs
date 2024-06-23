@@ -13,6 +13,7 @@ namespace Concert.DataAccess.Repository.IRepository
         ILanguageRepository Language { get; }
         ISongRepository Song { get; }
         ICompanyRepository Company { get; }
+        ISetListRepository SetList { get; }
 
         // Global methods
         void Save();
