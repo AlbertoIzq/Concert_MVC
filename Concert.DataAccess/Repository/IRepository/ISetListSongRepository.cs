@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Concert.DataAccess.Repository.IRepository
 {
-    public interface ISetListRepository : IRepository<SetList>
+    public interface ISetListSongRepository : IRepository<SetListSong>
     {
-        void Update(SetList setList);
+        void Update(SetListSong setListSong);
     }
 }

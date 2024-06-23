@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Concert.Models
 {
-    public class SetList
+    public class SetListSong
     {
         [Key]
         public int Id { get; set; }

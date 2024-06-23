@@ -10,18 +10,18 @@ using System.Threading.Tasks;
 
 namespace Concert.DataAccess.Repository
 {
-    public class SetListRepository : Repository<SetList>, ISetListRepository
+    public class SetListSongRepository : Repository<SetListSong>, ISetListSongRepository
     {
         private ApplicationDbContext _db;
 
-        public SetListRepository(ApplicationDbContext db) : base(db)
+        public SetListSongRepository(ApplicationDbContext db) : base(db)
         {
             _db = db;
         }
 
-        public void Update(SetList setList)
+        public void Update(SetListSong setListSong)
         {
-            _db.SetLists.Update(setList);
+            _db.SetListSongs.Update(setListSong);
         }
     }
 }
