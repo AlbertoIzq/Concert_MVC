@@ -12,6 +12,7 @@ namespace Concert.DataAccess.Repository
         public ISongRepository Song { get; private set; }
         public ICompanyRepository Company { get; private set; }
         public ISetListRepository SetList { get; private set; }
+        public IApplicationUserRepository ApplicationUser { get; private set; }
 
         public UnitOfWork(ApplicationDbContext db)
         {
@@ -21,6 +22,7 @@ namespace Concert.DataAccess.Repository
             Song = new SongRepository(_db);
             Company = new CompanyRepository(_db);
             SetList = new SetListRepository(_db);
+            ApplicationUser = new ApplicationUserRepository(_db);
         }
 
         public void Save()
