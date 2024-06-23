@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
 
 namespace Concert.DataAccess.Data
 {
@@ -17,8 +19,9 @@ namespace Concert.DataAccess.Data
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Language> Languages { get; set; }
         public DbSet<Song> Songs { get; set; }
+        public DbSet<Company> Companies { get; set; }
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
-        
+
         // To seed Genre table with some data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -70,6 +73,42 @@ namespace Concert.DataAccess.Data
                     LanguageId = 3,
                     ImageUrl = ""
                 }
+            );
+
+            modelBuilder.Entity<Company>().HasData(
+               new Company()
+               {
+                   Id = 1,
+                   Name = "Razzmatazz",
+                   StreetAddress = "C/ dels Almogàvers, 122, Sant Martí",
+                   City = "Barcelona",
+                   State = "Catalunya",
+                   Country = "Spain",
+                   PostalCode = "08018",
+                   PhoneNumber = "+34 933208200"
+               },
+               new Company()
+               {
+                   Id = 2,
+                   Name = "Sala Salamandra",
+                   StreetAddress = "Av. del Carrilet, 235",
+                   City = "L'Hospitalet de Llobregat",
+                   State = "Catalonia",
+                   Country = "Spain",
+                   PostalCode = "08907",
+                   PhoneNumber = "+34 933370602"
+               },
+               new Company()
+               {
+                   Id = 3,
+                   Name = "Botanique",
+                   StreetAddress = "Blue Royale 236",
+                   City = "Bruxelles",
+                   State = "Bruxelles",
+                   Country = "Belgium",
+                   PostalCode = "1210",
+                   PhoneNumber = "+32 022183732"
+               }
             );
         }
     }
