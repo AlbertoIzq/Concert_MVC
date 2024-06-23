@@ -15,6 +15,7 @@ namespace Concert.DataAccess.Repository
         public IGenreRepository Genre { get; private set; }
         public ILanguageRepository Language { get; private set; }
         public ISongRepository Song { get; private set; }
+        public ICompanyRepository Company { get; private set; }
 
         public UnitOfWork(ApplicationDbContext db)
         {
@@ -22,6 +23,7 @@ namespace Concert.DataAccess.Repository
             Genre = new GenreRepository(_db);
             Language = new LanguageRepository(_db);
             Song = new SongRepository(_db);
+            Company = new CompanyRepository(_db);
         }
 
         public void Save()
