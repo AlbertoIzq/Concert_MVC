@@ -59,7 +59,7 @@ namespace ConcertWeb.Areas.Customer.Controllers
                 // If it already exists in the db
                 if (setlistSongsFromDb.Where(u => u.SongId == setListSong.SongId).FirstOrDefault() != null)
                 {
-                    TempData["warning"] = "Song already added in setlist";
+                    TempData["warning"] = "Song already added to setlist";
                 }
                 // If it doesn't, save it as the last song added to setlist
                 else
@@ -76,6 +76,7 @@ namespace ConcertWeb.Areas.Customer.Controllers
 
                     _unitOfWork.SetListSong.Add(setListSong);
                     _unitOfWork.Save();
+                    TempData["success"] = "Song added successfully to setlist";
                 }
             }
 
