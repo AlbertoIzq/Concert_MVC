@@ -4,6 +4,7 @@ using Concert.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Concert.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240623165109_AddSetListToDb")]
+    partial class AddSetListToDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -178,7 +181,7 @@ namespace Concert.DataAccess.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Concert.Models.SetListSong", b =>
+            modelBuilder.Entity("Concert.Models.SetList", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -202,7 +205,7 @@ namespace Concert.DataAccess.Migrations
 
                     b.HasIndex("SongId");
 
-                    b.ToTable("SetListSongs");
+                    b.ToTable("SetLists");
                 });
 
             modelBuilder.Entity("Concert.Models.Song", b =>
@@ -525,7 +528,7 @@ namespace Concert.DataAccess.Migrations
                     b.HasDiscriminator().HasValue("ApplicationUser");
                 });
 
-            modelBuilder.Entity("Concert.Models.SetListSong", b =>
+            modelBuilder.Entity("Concert.Models.SetList", b =>
                 {
                     b.HasOne("Concert.Models.ApplicationUser", "ApplicationUser")
                         .WithMany()

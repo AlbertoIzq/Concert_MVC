@@ -28,19 +28,32 @@ namespace Concert.DataAccess.Repository
             dbSet.Add(entity);
         }
 
-        public T Get(Expression<Func<T, bool>> filter, string? includeProperties = null)
+        public T Get(Expression<Func<T, bool>> filter, string? includeProperties = null, bool tracked = false)
         {
-            IQueryable<T> query = dbSet;
-            query = query.Where(filter);
+            IQueryable<T> query;
 
+            if (tracked)
+            {
+                query = dbSet;
+            }
+            else
+            {
+                query = dbSet.AsNoTracking();
+            }
+
+            query = query.Where(filter);
             query = IncludeProperties(query, includeProperties);
 
             return query.FirstOrDefault();
         }
 
-        public IEnumerable<T> GetAll(string? includeProperties = null)
+        public IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter = null, string? includeProperties = null)
         {
             IQueryable<T> query = dbSet;
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
 
             query = IncludeProperties(query, includeProperties);
 
@@ -57,8 +70,12 @@ namespace Concert.DataAccess.Repository
             dbSet.RemoveRange(entities);
         }
 
-        // Used to populate properties based in a ForeignKey relation
-        // includeProperties can contain multiple properties separated by a comma e.g. "Category,Language"
+        /// <summary>
+        /// Used to populate properties based in a ForeignKey relation
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="includeProperties">It can contain multiple properties separated by a comma e.g. "Category,Language"</param>
+        /// <returns></returns>
         private IQueryable<T> IncludeProperties(IQueryable<T> query, string? includeProperties = null)
         {
             if (!string.IsNullOrEmpty(includeProperties))
