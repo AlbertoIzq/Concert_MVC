@@ -1,12 +1,14 @@
-﻿@model Song
+﻿@model SetListSong
 
 <form method="post">
+    <input asp-for="SongId" hidden />
+    <input asp-for="Order" hidden />
     <div class="card shadow border-0 my-4">
         <div class="card-header bg-secondary bg-gradient text-light py-4">
             <div class="row">
                 <div class="col-12 text-center">
-                    <h3 class="text-white text-uppercase">@Model.Title</h3>
-                    <h5 class="text-white-50 fw-semibold mb-0">@Model.Artist</h5>
+                    <h3 class="text-white text-uppercase">@Model.Song.Title</h3>
+                    <h5 class="text-white-50 fw-semibold mb-0">@Model.Song.Artist</h5>
                 </div>
             </div>
         </div>
@@ -21,28 +23,28 @@
                 </div>
                 <div class="row">
                     <div class="col-12 col-lg-3 offset-lg-1 text-center mb-3">
-                        <img src="~/@Model.ImageUrl" width="100%" class="rounded" />
+                        <img src="~/@Model.Song.ImageUrl" width="100%" class="rounded" />
                     </div>
                     <div class="col-12 col-lg-6 offset-lg-1 mt-5">
                         <div class="col-12 col-md-6 pb-4">
                             <h5>
-                                <span class="badge">@Model.Genre.Name</span>
+                                <span class="badge">@Model.Song.Genre.Name</span>
                             </h5>  
                         </div>
                         <div class="row ps-1">
-                            <h6 class="text-dark text-opacity-75 "><b>Release year:</b> @Model.ReleaseYear</h6>
+                            <h6 class="text-dark text-opacity-75 "><b>Release year:</b> @Model.Song.ReleaseYear</h6>
                         </div>
                         <div class="row ps-1">
-                            <h6 class="text-dark text-opacity-75 "><b>Cover length:</b> @Model.Length.ToString("%m' min '%s' sec'")</h6>
+                            <h6 class="text-dark text-opacity-75 "><b>Cover length:</b> @Model.Song.Length.ToString("%m' min '%s' sec'")</h6>
                         </div>
                         <div class="row ps-1 mb-4">
-                            <h6 class="text-dark text-opacity-75 "><b>Language:</b> @Model.Language.Name</h6>
+                            <h6 class="text-dark text-opacity-75 "><b>Language:</b> @Model.Song.Language.Name</h6>
                         </div>
                         <div class="row">
                             <div class="col-12 col-md-6 pb-1">
-                                <button type="submit" disabled
+                                <button type="submit"
                                         class="btn btn-primary bg-gradient py-2 text-uppercase fw-semibold">
-                                    Add to Tracklist (Coming Soon...)
+                                    Add to SetList
                                 </button>
                             </div>
                         </div>
