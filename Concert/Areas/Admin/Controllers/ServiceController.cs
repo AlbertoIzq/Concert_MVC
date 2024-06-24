@@ -98,6 +98,11 @@ namespace ConcertWeb.Areas.Admin.Controllers
             {
                 return Json(new { success = false, message = "Error while deleting" });
             }
+            // Cannot delete default service
+            if (id == 1)
+            {
+                return Json(new { success = false, message = "Error while deleting, you cannot delete default service" });
+            }
 
             _unitOfWork.Service.Remove(serviceToBeDeleted);
             _unitOfWork.Save();

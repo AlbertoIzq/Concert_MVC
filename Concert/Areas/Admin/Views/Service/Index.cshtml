@@ -1,0 +1,39 @@
+﻿<div class="card shadow border-0 my-4">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Service List</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <div class="row pb-4">
+            <div class="col-12 text-end">
+                <a asp-area="Admin" asp-controller="Service" asp-action="Upsert" class="btn btn-primary">
+                    <i class="bi bi-plus-square"></i> Create new Service
+                </a>
+            </div>
+        </div>
+        <!-- Table -->
+        <table id="tableData" class="table table-bordered table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Fixed price
+                    </th>
+                    <th>
+                        Price per song
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/js/service.js"></script>
+}
