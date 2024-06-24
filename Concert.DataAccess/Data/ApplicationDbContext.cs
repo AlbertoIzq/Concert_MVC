@@ -19,6 +19,7 @@ namespace Concert.DataAccess.Data
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Language> Languages { get; set; }
         public DbSet<Song> Songs { get; set; }
+        public DbSet<Service> Services { get; set; }
         public DbSet<Company> Companies { get; set; }
         public DbSet<SetListSong> SetListSongs { get; set; }
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
@@ -110,6 +111,17 @@ namespace Concert.DataAccess.Data
                    PostalCode = "1210",
                    PhoneNumber = "+32 022183732"
                }
+            );
+
+            modelBuilder.Entity<Service>().HasData(
+                new Service() {
+                    Id = 1,
+                    Name = "Guitar and vocals",
+                    Description = "Soundaker guitarist and singer. It's the basic service by default," +
+                    "then you can add extra services as other musicians, etc.",
+                    PriceFixed = 100.0,
+                    PricePerSong = 10.0
+                }
             );
         }
     }
