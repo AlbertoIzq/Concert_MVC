@@ -3,7 +3,12 @@
         url: url,
         type: 'POST',
         success: function (data) {
-            toastr.success(data.message);
+            if (data.success) {
+                toastr.success(data.message);
+            }
+            else {
+                toastr.warning(data.message);
+            }
         }
     })
 }
