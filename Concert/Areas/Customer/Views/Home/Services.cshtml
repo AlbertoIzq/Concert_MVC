@@ -1,0 +1,55 @@
+﻿@model List<Service>
+
+<div class="card shadow border-0 my-4">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Services List</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        Service name
+                    </th>
+                    <th>
+                        Description
+                    </th>
+                    <th>
+                        Fixed price
+                    </th>
+                    <th>
+                        Price per song
+                    </th>
+                    <th>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var service in Model)
+                {
+                    <tr>
+                        <td>@service.Name</td>
+                        <td>@Html.Raw(service.Description)</td>
+                        <td>@service.PriceFixed</td>
+                        <td>@service.PricePerSong</td>
+                        <td>
+                            <div class="w-75">
+                                <a onClick=AddService('/Customer/Home/Services/@service.Id') class="btn btn-primary bg-gradient text-uppercase fw-semibold">
+                                    Add to Concert
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/js/serviceAdd.js"></script>
+}
