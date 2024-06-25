@@ -12,6 +12,7 @@ namespace Concert.DataAccess.Repository.IRepository
         IGenreRepository Genre { get; }
         ILanguageRepository Language { get; }
         ISongRepository Song { get; }
+        IServiceRepository Service { get; }
         ICompanyRepository Company { get; }
         ISetListSongRepository SetListSong { get; }
         IApplicationUserRepository ApplicationUser { get; }
