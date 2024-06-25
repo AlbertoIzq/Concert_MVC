@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading;
@@ -215,6 +216,13 @@ namespace ConcertWeb.Areas.Identity.Pages.Account
 
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                    // Add service by default to created user
+                    SetListService setListServiceDefault = new SetListService();
+                    setListServiceDefault.ApplicationUserId = userId;
+                    setListServiceDefault.ServiceId = 1;
+                    _unitOfWork.SetListService.Add(setListServiceDefault);
+                    _unitOfWork.Save();
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {

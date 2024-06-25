@@ -38,6 +38,35 @@ namespace ConcertWeb.Areas.Customer.Controllers
             return View(setListSong);
         }
 
+        public IActionResult Services()
+        {
+            List<Service> serviceList = _unitOfWork.Service.GetAll().OrderBy(u => u.Name).ToList();
+            int indexDefaultService = serviceList.FindIndex(u => u.Id == 1);
+
+            // Put default service at the beginning of the list to show it first in the table
+            Service defaultService = serviceList[indexDefaultService];
+            for (int i = indexDefaultService; i > 0 ; i--)
+            {
+                serviceList[i] = serviceList[i - 1];
+            }    
+            serviceList[0] = defaultService;
+
+            return View(serviceList);
+        }
+
+        public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        #region ApiCalls
+
         /// <summary>
         /// [Authorize] because if someone is posting, they must be an authorized user (no matter which role)
         /// i.e. they have to be logged into the website
@@ -83,52 +112,38 @@ namespace ConcertWeb.Areas.Customer.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult Services()
-        {
-            List<Service> serviceList = _unitOfWork.Service.GetAll().OrderBy(u => u.Name).ToList();
-            int indexDefaultService = serviceList.FindIndex(u => u.Id == 1);
-
-            Service defaultService = serviceList[indexDefaultService];
-            for (int i = indexDefaultService; i > 0 ; i--)
-                serviceList[i] = serviceList[i - 1];
-            serviceList[0] = defaultService;
-
-            return View(serviceList);
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
-        #region ApiCalls
-
         [HttpPost]
+        [Authorize]
         public IActionResult Services(int? id)
         {
-            return Json(new { success = true, message = "Service added successfully to Set list" });
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+            
+            SetListService setListService = new SetListService();
+            setListService.ApplicationUserId = userId;
 
-            /*
-            Song songToBeDeleted = _unitOfWork.Song.Get(u => u.Id == id);
-            if (songToBeDeleted == null)
+            if (id != null)
             {
-                return Json(new { success = false, message = "Error while deleting" });
+                setListService.ServiceId = (int)id;
             }
 
-            // Delete the old image
-            DeleteOldImage(songToBeDeleted);
+            var setlistServicesFromDb = _unitOfWork.SetListService.GetAll(u => u.ApplicationUserId == userId);
 
-            _unitOfWork.Song.Remove(songToBeDeleted);
-            _unitOfWork.Save();
-            //TempData["success"] = "Song deleted successfully";
-            return Json(new { success = true, message = "Song deleted successfully" });
-            */
+            if (setlistServicesFromDb != null)
+            {
+                // If it already exists in the db
+                if (setlistServicesFromDb.Where(u => u.ServiceId == setListService.ServiceId).FirstOrDefault() != null)
+                {
+                    return Json(new { success = false, message = "Service already added to Set list" });
+                }
+
+                // If it doesn't, add it to setlist
+                _unitOfWork.SetListService.Add(setListService);
+                _unitOfWork.Save();
+                return Json(new { success = true, message = "Service added successfully to Set list" });
+
+            }
+            return RedirectToAction(nameof(Services));
         }
 
         #endregion

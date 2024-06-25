@@ -22,6 +22,7 @@ namespace Concert.DataAccess.Data
         public DbSet<Service> Services { get; set; }
         public DbSet<Company> Companies { get; set; }
         public DbSet<SetListSong> SetListSongs { get; set; }
+        public DbSet<SetListService> SetListServices { get; set; }
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
 
         // To seed Genre table with some data
