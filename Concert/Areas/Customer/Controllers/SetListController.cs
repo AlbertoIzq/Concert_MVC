@@ -12,9 +12,35 @@ namespace ConcertWeb.Areas.Customer.Controllers
     [Authorize]
     public class SetListController : Controller
     {
+        private readonly IUnitOfWork _unitOfWork;
+        public SetListVM SetListVM { get; set; }
+
+        public SetListController(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
+
         public IActionResult Index()
         {
-            return View();
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            SetListVM = new SetListVM()
+            {
+                SongList = _unitOfWork.SetListSong.GetAll(u => u.ApplicationUserId == userId, includeProperties: "Song"),
+                ServiceList = _unitOfWork.SetListService.GetAll(u => u.ApplicationUserId == userId, includeProperties: "Service"),
+
+            };
+
+            // Calculate Order total
+            int songCount = SetListVM.SongList.Count();
+            foreach (var setListService in SetListVM.ServiceList)
+            {
+                setListService.PriceVariable = setListService.Service.PriceFixed + songCount * setListService.Service.PricePerSong;
+                SetListVM.OrderTotal += setListService.PriceVariable;
+            }
+
+            return View(SetListVM);
         }
     }
 }
