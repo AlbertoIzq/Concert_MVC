@@ -36,8 +36,8 @@ namespace ConcertWeb.Areas.Customer.Controllers
             int songCount = SetListVM.SongList.Count();
             foreach (var setListService in SetListVM.ServiceList)
             {
-                setListService.PriceVariable = setListService.Service.PriceFixed + songCount * setListService.Service.PricePerSong;
-                SetListVM.OrderTotal += setListService.PriceVariable;
+                setListService.PriceVariable = songCount * setListService.Service.PricePerSong;
+                SetListVM.OrderTotal += setListService.PriceVariable + setListService.Service.PriceFixed;
             }
 
             return View(SetListVM);
