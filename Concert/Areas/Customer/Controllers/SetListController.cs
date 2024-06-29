@@ -55,6 +55,11 @@ namespace ConcertWeb.Areas.Customer.Controllers
             return View(SetListVM);
         }
 
+        public IActionResult Summary()
+        {
+            return View();
+        }
+
         public IActionResult SetBefore(int id)
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
