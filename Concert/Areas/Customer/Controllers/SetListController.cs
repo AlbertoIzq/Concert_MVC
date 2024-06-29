@@ -3,8 +3,10 @@ using Concert.Models;
 using Concert.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 using System.Diagnostics;
 using System.Security.Claims;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ConcertWeb.Areas.Customer.Controllers
 {
@@ -41,6 +43,88 @@ namespace ConcertWeb.Areas.Customer.Controllers
             }
 
             return View(SetListVM);
+        }
+
+        public IActionResult SetBefore(int id)
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var setListSongs = _unitOfWork.SetListSong.GetAll(u => u.ApplicationUserId == userId).OrderBy(u => u.Order).ToList();
+            int indexSetListSong = setListSongs.FindIndex(u => u.Id == id);
+            int order = setListSongs[indexSetListSong].Order;
+
+            if (order > 1)
+            {
+
+                setListSongs[indexSetListSong].Order--;
+                setListSongs[indexSetListSong - 1].Order++;
+                _unitOfWork.SetListSong.Update(setListSongs[indexSetListSong]);
+                _unitOfWork.SetListSong.Update(setListSongs[indexSetListSong - 1]);
+                _unitOfWork.Save();
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult SetAfter(int id)
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var setListSongs = _unitOfWork.SetListSong.GetAll(u => u.ApplicationUserId == userId).OrderBy(u => u.Order).ToList();
+            int indexSetListSong = setListSongs.FindIndex(u => u.Id == id);
+            int order = setListSongs[indexSetListSong].Order;
+            int maxOrder = setListSongs.Last().Order;
+
+            if (order < maxOrder)
+            {
+
+                setListSongs[indexSetListSong].Order++;
+                setListSongs[indexSetListSong + 1].Order--;
+                _unitOfWork.SetListSong.Update(setListSongs[indexSetListSong]);
+                _unitOfWork.SetListSong.Update(setListSongs[indexSetListSong + 1]);
+                _unitOfWork.Save();
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult RemoveSong(int id)
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var setListSong = _unitOfWork.SetListSong.GetAll(u => u.ApplicationUserId == userId).Where(u => u.Id == id).FirstOrDefault();
+
+            if (setListSong != null)
+            {
+                _unitOfWork.SetListSong.Remove(setListSong);
+                _unitOfWork.Save();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult RemoveService(int id)
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var setListService = _unitOfWork.SetListService.GetAll(u => u.ApplicationUserId == userId).Where(u => u.Id == id).FirstOrDefault();
+
+            if (setListService != null)
+            {
+                if (setListService.ServiceId == 1)
+                {
+                    TempData["warning"] = "Error while deleting, you cannot delete default service";
+                }
+                else
+                {
+                    _unitOfWork.SetListService.Remove(setListService);
+                    _unitOfWork.Save();
+                }
+            }
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }
