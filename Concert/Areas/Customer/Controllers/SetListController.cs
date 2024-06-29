@@ -34,6 +34,16 @@ namespace ConcertWeb.Areas.Customer.Controllers
 
             };
 
+            // Add service by default if is isn't already included
+            if (SetListVM.ServiceList.ToList().Where(u => u.ServiceId == 1).ToList() == null)
+            {
+                SetListService setListServiceDefault = new SetListService();
+                setListServiceDefault.ApplicationUserId = userId;
+                setListServiceDefault.ServiceId = 1;
+                _unitOfWork.SetListService.Add(setListServiceDefault);
+                _unitOfWork.Save();
+            }
+
             // Calculate Order total
             int songCount = SetListVM.SongList.Count();
             foreach (var setListService in SetListVM.ServiceList)
