@@ -71,7 +71,6 @@ namespace ConcertWeb.Areas.Customer.Controllers
 
             if (order > 1)
             {
-
                 setListSongs[indexSetListSong].Order--;
                 setListSongs[indexSetListSong - 1].Order++;
                 _unitOfWork.SetListSong.Update(setListSongs[indexSetListSong]);
@@ -93,7 +92,6 @@ namespace ConcertWeb.Areas.Customer.Controllers
 
             if (order < maxOrder)
             {
-
                 setListSongs[indexSetListSong].Order++;
                 setListSongs[indexSetListSong + 1].Order--;
                 _unitOfWork.SetListSong.Update(setListSongs[indexSetListSong]);
@@ -112,6 +110,17 @@ namespace ConcertWeb.Areas.Customer.Controllers
 
             if (setListSong != null)
             {
+                // Update other songs order after removing current song
+                var setListSongs = _unitOfWork.SetListSong.GetAll(u => u.ApplicationUserId == userId).OrderBy(u => u.Order).ToList();
+                int indexSetListSong = setListSongs.FindIndex(u => u.Id == id);
+
+                for (int i = indexSetListSong + 1; i < setListSongs.Count(); i++)
+                {
+                    setListSongs[i].Order--;
+                    _unitOfWork.SetListSong.Update(setListSongs[i]);
+                    _unitOfWork.Save();
+                }
+                // Remove current song
                 _unitOfWork.SetListSong.Remove(setListSong);
                 _unitOfWork.Save();
             }
