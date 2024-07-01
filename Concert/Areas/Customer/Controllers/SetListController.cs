@@ -31,7 +31,7 @@ namespace ConcertWeb.Areas.Customer.Controllers
             {
                 SongList = _unitOfWork.SetListSong.GetAll(u => u.ApplicationUserId == userId, includeProperties: "Song"),
                 ServiceList = _unitOfWork.SetListService.GetAll(u => u.ApplicationUserId == userId, includeProperties: "Service"),
-
+                OrderHeader = new()
             };
 
             // Add service by default if is isn't already included
@@ -49,15 +49,43 @@ namespace ConcertWeb.Areas.Customer.Controllers
             foreach (var setListService in SetListVM.ServiceList)
             {
                 setListService.PriceVariable = songCount * setListService.Service.PricePerSong;
-                SetListVM.OrderTotal += setListService.PriceVariable + setListService.Service.PriceFixed;
+                SetListVM.OrderHeader.OrderTotal += setListService.PriceVariable + setListService.Service.PriceFixed;
             }
 
-            return View(SetListVM);
+			return View(SetListVM);
         }
 
         public IActionResult Summary()
         {
-            return View();
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            SetListVM = new SetListVM()
+            {
+                SongList = _unitOfWork.SetListSong.GetAll(u => u.ApplicationUserId == userId, includeProperties: "Song"),
+                ServiceList = _unitOfWork.SetListService.GetAll(u => u.ApplicationUserId == userId, includeProperties: "Service"),
+                OrderHeader = new()
+            };
+
+            SetListVM.OrderHeader.ApplicationUser = _unitOfWork.ApplicationUser.Get(u => u.Id == userId);
+            SetListVM.OrderHeader.Name = SetListVM.OrderHeader.ApplicationUser.Name;
+            SetListVM.OrderHeader.Surname = SetListVM.OrderHeader.ApplicationUser.Surname;
+            SetListVM.OrderHeader.PhoneNumber = SetListVM.OrderHeader.ApplicationUser.PhoneNumber;
+            SetListVM.OrderHeader.StreetAddress = SetListVM.OrderHeader.ApplicationUser.StreetAddress;
+            SetListVM.OrderHeader.City = SetListVM.OrderHeader.ApplicationUser.City;
+            SetListVM.OrderHeader.State = SetListVM.OrderHeader.ApplicationUser.State;
+            SetListVM.OrderHeader.Country = SetListVM.OrderHeader.ApplicationUser.Country;
+            SetListVM.OrderHeader.PostalCode = SetListVM.OrderHeader.ApplicationUser.PostalCode;
+
+            // Calculate Order total
+            int songCount = SetListVM.SongList.Count();
+            foreach (var setListService in SetListVM.ServiceList)
+            {
+                setListService.PriceVariable = songCount * setListService.Service.PricePerSong;
+                SetListVM.OrderHeader.OrderTotal += setListService.PriceVariable + setListService.Service.PriceFixed;
+            }
+
+            return View(SetListVM);
         }
 
         public IActionResult SetBefore(int id)

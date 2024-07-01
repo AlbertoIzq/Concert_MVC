@@ -12,9 +12,6 @@ namespace Concert.Models.ViewModels
     {
         public IEnumerable<SetListSong> SongList { get; set; }
         public IEnumerable<SetListService> ServiceList { get; set; }
-
-        public double OrderTotal { get; set; }
+        public OrderHeader OrderHeader { get; set; }
     }
-
-
 }
