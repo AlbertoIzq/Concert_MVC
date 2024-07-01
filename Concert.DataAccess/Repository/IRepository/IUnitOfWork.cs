@@ -16,6 +16,9 @@ namespace Concert.DataAccess.Repository.IRepository
         ICompanyRepository Company { get; }
         ISetListSongRepository SetListSong { get; }
         ISetListServiceRepository SetListService { get; }
+        IOrderDetailSongRepository OrderDetailSong { get; }
+        IOrderDetailServiceRepository OrderDetailService { get; }
+        IOrderHeaderRepository OrderHeader { get; }
         IApplicationUserRepository ApplicationUser { get; }
 
         // Global methods

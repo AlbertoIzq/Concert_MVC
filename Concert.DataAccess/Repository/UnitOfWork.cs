@@ -1,5 +1,6 @@
 ﻿using Concert.DataAccess.Data;
 using Concert.DataAccess.Repository.IRepository;
+using Concert.Models;
 
 namespace Concert.DataAccess.Repository
 {
@@ -14,6 +15,9 @@ namespace Concert.DataAccess.Repository
         public ICompanyRepository Company { get; private set; }
         public ISetListSongRepository SetListSong { get; private set; }
         public ISetListServiceRepository SetListService { get; private set; }
+        public IOrderDetailSongRepository OrderDetailSong { get; private set; }
+        public IOrderDetailServiceRepository OrderDetailService { get; private set; }
+        public IOrderHeaderRepository OrderHeader { get; private set; }
         public IApplicationUserRepository ApplicationUser { get; private set; }
 
         public UnitOfWork(ApplicationDbContext db)
@@ -26,6 +30,9 @@ namespace Concert.DataAccess.Repository
             Company = new CompanyRepository(_db);
             SetListSong = new SetListSongRepository(_db);
             SetListService = new SetListServiceRepository(_db);
+            OrderDetailSong = new OrderDetailSongRepository(_db);
+            OrderDetailService = new OrderDetailServiceRepository(_db);
+            OrderHeader = new OrderHeaderRepository(_db);
             ApplicationUser = new ApplicationUserRepository(_db);
         }
 
