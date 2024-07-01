@@ -18,10 +18,12 @@ namespace Concert.Models
         [Required]
         public string Surname { get; set; }
 
+        [DisplayName("Street Address")]
         public string? StreetAddress { get; set; }
         public string? City { get; set; }
         public string? State { get; set; }
         public string? Country { get; set; }
+        [DisplayName("Postal Code")]
         public string? PostalCode { get; set; }
 
         [DisplayName("Company")]
