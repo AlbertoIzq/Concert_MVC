@@ -6,6 +6,7 @@ using Concert.DataAccess.Repository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Concert.Utility;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,9 @@ string databaseName = envVarReader["AppSettings_DefaultConnection_DatabaseName"]
 string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 connectionString = connectionString?.Replace("ServerName", serverName);
 connectionString = connectionString?.Replace("DatabaseName", databaseName);
+// Get Stripe keys
+string publishableKey = envVarReader["Stripe_PublishableKey"];
+string secretKey = envVarReader["Stripe_SecretKey"];
 
 // Add services to the container.
 
@@ -58,6 +62,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>()?.Replace("SecretKey", secretKey);
 
 app.UseRouting();
 
