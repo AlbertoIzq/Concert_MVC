@@ -1,8 +1,10 @@
 using Concert.DataAccess.Repository.IRepository;
 using Concert.Models;
 using Concert.Models.ViewModels;
+using Concert.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 using System.Diagnostics;
 using System.Security.Claims;
@@ -15,6 +17,7 @@ namespace ConcertWeb.Areas.Customer.Controllers
     public class SetListController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        [BindProperty]
         public SetListVM SetListVM { get; set; }
 
         public SetListController(IUnitOfWork unitOfWork)
@@ -55,6 +58,7 @@ namespace ConcertWeb.Areas.Customer.Controllers
 			return View(SetListVM);
         }
 
+        [HttpGet]
         public IActionResult Summary()
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
@@ -88,7 +92,94 @@ namespace ConcertWeb.Areas.Customer.Controllers
             return View(SetListVM);
         }
 
-        public IActionResult SetBefore(int id)
+        [HttpPost]
+        [ActionName("Summary")]
+		public IActionResult SummaryPOST()
+		{
+            ValidateSetListVM(SetListVM);
+
+			var claimsIdentity = (ClaimsIdentity)User.Identity;
+			var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+			SetListVM.SongList = _unitOfWork.SetListSong.GetAll(u => u.ApplicationUserId == userId, includeProperties: "Song");
+			SetListVM.ServiceList = _unitOfWork.SetListService.GetAll(u => u.ApplicationUserId == userId, includeProperties: "Service");
+			SetListVM.OrderHeader.ApplicationUserId = userId;			
+
+			if (ModelState.IsValid)
+			{
+				ApplicationUser applicationUser = _unitOfWork.ApplicationUser.Get(u => u.Id == userId);
+
+				SetListVM.OrderHeader.OrderDate = System.DateTime.Now;
+
+				// Calculate Order total
+				int songCount = SetListVM.SongList.Count();
+				foreach (var setListService in SetListVM.ServiceList)
+				{
+					setListService.PriceVariable = songCount * setListService.Service.PricePerSong;
+					SetListVM.OrderHeader.OrderTotal += setListService.PriceVariable + setListService.Service.PriceFixed;
+				}
+
+				// It's a regular customer account and we need to capture payment
+				// GetValueOrDefault() because it can be null
+				if (applicationUser.CompanyId.GetValueOrDefault() == 0)
+				{
+					SetListVM.OrderHeader.OrderStatus = SD.STATUS_PENDING;
+					SetListVM.OrderHeader.PaymentStatus = SD.PAYMENT_STATUS_PENDING;
+				}
+				// It's a company user
+				else
+				{
+					SetListVM.OrderHeader.OrderStatus = SD.STATUS_APPROVED;
+					SetListVM.OrderHeader.PaymentStatus = SD.PAYMENT_STATUS_DELAYED_PAYMENT;
+				}
+
+				// Create OrderHeader
+				_unitOfWork.OrderHeader.Add(SetListVM.OrderHeader);
+				_unitOfWork.Save();
+
+				// Create OrderDetailSong
+				foreach (var setListSong in SetListVM.SongList)
+				{
+					OrderDetailSong orderDetailSong = new()
+					{
+						SongId = setListSong.SongId,
+						Order = setListSong.Order,
+						OrderHeaderId = SetListVM.OrderHeader.Id
+					};
+					_unitOfWork.OrderDetailSong.Add(orderDetailSong);
+					_unitOfWork.Save();
+				}
+
+				// Create OrderDetailService
+				foreach (var setListService in SetListVM.ServiceList)
+				{
+					OrderDetailService orderDetailService = new()
+					{
+						ServiceId = setListService.ServiceId,
+						OrderHeaderId = SetListVM.OrderHeader.Id
+					};
+					_unitOfWork.OrderDetailService.Add(orderDetailService);
+					_unitOfWork.Save();
+				}
+
+				// If it's a regular customer account and we need to capture payment
+				if (applicationUser.CompanyId.GetValueOrDefault() == 0)
+				{
+					/// @todo Stripe logic
+				}
+
+                return RedirectToAction(nameof(OrderConfirmation), new { id = SetListVM.OrderHeader.Id });
+			}
+
+			return View(SetListVM);
+		}
+
+        public IActionResult OrderConfirmation(int id)
+        {
+            return View(id);
+        }
+
+		public IActionResult SetBefore(int id)
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
@@ -178,5 +269,15 @@ namespace ConcertWeb.Areas.Customer.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-    }
+
+		private void ValidateSetListVM(SetListVM setListVM)
+		{
+            if (!setListVM.OrderHeader.PhoneNumber.IsNullOrEmpty() &&
+                setListVM.OrderHeader.PhoneNumber.Any(char.IsAsciiLetter))
+            {
+				ModelState.AddModelError("OrderHeader.PhoneNumber", "Phone number cannot contain letters.");
+			}
+
+		}
+	}
 }

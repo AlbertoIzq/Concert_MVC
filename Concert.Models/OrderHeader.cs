@@ -10,7 +10,8 @@ namespace Concert.Models
         [Key]
         public int Id { get; set; }
 
-        public string ApplicationUserId { get; set; }
+		[ValidateNever] // Needed for Model validation in SummaryPOST method
+		public string ApplicationUserId { get; set; }
         [ForeignKey("ApplicationUserId")]
         [ValidateNever]
         public ApplicationUser ApplicationUser { get; set; }
