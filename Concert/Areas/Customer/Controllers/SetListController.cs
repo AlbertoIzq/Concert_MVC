@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
+using Stripe.Checkout;
 using System.Diagnostics;
 using System.Security.Claims;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ConcertWeb.Areas.Customer.Controllers
 {
@@ -103,21 +103,21 @@ namespace ConcertWeb.Areas.Customer.Controllers
 
 			SetListVM.SongList = _unitOfWork.SetListSong.GetAll(u => u.ApplicationUserId == userId, includeProperties: "Song");
 			SetListVM.ServiceList = _unitOfWork.SetListService.GetAll(u => u.ApplicationUserId == userId, includeProperties: "Service");
-			SetListVM.OrderHeader.ApplicationUserId = userId;			
+			SetListVM.OrderHeader.ApplicationUserId = userId;
+
+			// Calculate Order total
+			int songCount = SetListVM.SongList.Count();
+			foreach (var setListService in SetListVM.ServiceList)
+			{
+				setListService.PriceVariable = songCount * setListService.Service.PricePerSong;
+				SetListVM.OrderHeader.OrderTotal += setListService.PriceVariable + setListService.Service.PriceFixed;
+			}
 
 			if (ModelState.IsValid)
 			{
 				ApplicationUser applicationUser = _unitOfWork.ApplicationUser.Get(u => u.Id == userId);
 
 				SetListVM.OrderHeader.OrderDate = System.DateTime.Now;
-
-				// Calculate Order total
-				int songCount = SetListVM.SongList.Count();
-				foreach (var setListService in SetListVM.ServiceList)
-				{
-					setListService.PriceVariable = songCount * setListService.Service.PricePerSong;
-					SetListVM.OrderHeader.OrderTotal += setListService.PriceVariable + setListService.Service.PriceFixed;
-				}
 
 				// It's a regular customer account and we need to capture payment
 				// GetValueOrDefault() because it can be null
@@ -133,39 +133,24 @@ namespace ConcertWeb.Areas.Customer.Controllers
 					SetListVM.OrderHeader.PaymentStatus = SD.PAYMENT_STATUS_DELAYED_PAYMENT;
 				}
 
-				// Create OrderHeader
-				_unitOfWork.OrderHeader.Add(SetListVM.OrderHeader);
-				_unitOfWork.Save();
-
-				// Create OrderDetailSong
-				foreach (var setListSong in SetListVM.SongList)
-				{
-					OrderDetailSong orderDetailSong = new()
-					{
-						SongId = setListSong.SongId,
-						Order = setListSong.Order,
-						OrderHeaderId = SetListVM.OrderHeader.Id
-					};
-					_unitOfWork.OrderDetailSong.Add(orderDetailSong);
-					_unitOfWork.Save();
-				}
-
-				// Create OrderDetailService
-				foreach (var setListService in SetListVM.ServiceList)
-				{
-					OrderDetailService orderDetailService = new()
-					{
-						ServiceId = setListService.ServiceId,
-						OrderHeaderId = SetListVM.OrderHeader.Id
-					};
-					_unitOfWork.OrderDetailService.Add(orderDetailService);
-					_unitOfWork.Save();
-				}
+                // Create OrderHeader, OrderDetailSong and OrderDetailService in database
+                CreateOrderHeaderAndDetailSongAndServiceInDb();
 
 				// If it's a regular customer account and we need to capture payment
 				if (applicationUser.CompanyId.GetValueOrDefault() == 0)
 				{
-					/// @todo Stripe logic
+					// Stripe logic
+					var service = new SessionService();
+                    var options = SetStripeOptions();
+					Session session = service.Create(options);
+
+                    // PaymentIntentId will be null because it's only populated once payment is successful
+                    _unitOfWork.OrderHeader.UpdateStripePaymentId(SetListVM.OrderHeader.Id, session.Id, session.PaymentIntentId);
+                    _unitOfWork.Save();
+                    Response.Headers.Add("Location", session.Url);
+
+                    // This means that we are redirecting to a new Url
+                    return new StatusCodeResult(303);
 				}
 
                 return RedirectToAction(nameof(OrderConfirmation), new { id = SetListVM.OrderHeader.Id });
@@ -278,6 +263,117 @@ namespace ConcertWeb.Areas.Customer.Controllers
 				ModelState.AddModelError("OrderHeader.PhoneNumber", "Phone number cannot contain letters.");
 			}
 
+			if (setListVM.OrderHeader.ConcertDate <= DateTime.Now)
+			{
+				ModelState.AddModelError("OrderHeader.ConcertDate", "Concert date cannot be in the past");
+			}
+
+		}
+
+        /// <summary>
+        /// Create OrderHeader, OrderDetailSong and OrderDetailService in the database
+        /// </summary>
+        private void CreateOrderHeaderAndDetailSongAndServiceInDb()
+        {
+			// Create OrderHeader
+			_unitOfWork.OrderHeader.Add(SetListVM.OrderHeader);
+			_unitOfWork.Save();
+
+			// Create OrderDetailSong
+			foreach (var setListSong in SetListVM.SongList)
+			{
+				OrderDetailSong orderDetailSong = new()
+				{
+					SongId = setListSong.SongId,
+					Order = setListSong.Order,
+					OrderHeaderId = SetListVM.OrderHeader.Id
+				};
+				_unitOfWork.OrderDetailSong.Add(orderDetailSong);
+				_unitOfWork.Save();
+			}
+
+			// Create OrderDetailService
+			foreach (var setListService in SetListVM.ServiceList)
+			{
+				OrderDetailService orderDetailService = new()
+				{
+					ServiceId = setListService.ServiceId,
+					OrderHeaderId = SetListVM.OrderHeader.Id
+				};
+				_unitOfWork.OrderDetailService.Add(orderDetailService);
+				_unitOfWork.Save();
+			}
+		}
+
+        private SessionCreateOptions SetStripeOptions()
+        {
+			string domain = "http://localhost:5251/";
+
+			var options = new SessionCreateOptions
+			{
+				SuccessUrl = domain + $"Customer/SetList/OrderConfirmation/{SetListVM.OrderHeader.Id}",
+				CancelUrl = domain + "Customer/SetList/Index",
+				LineItems = new List<SessionLineItemOptions>(),
+				Mode = "payment",
+			};
+
+			int songsQuantity = SetListVM.SongList.Count();
+			foreach (var setListSong in SetListVM.SongList)
+			{
+				// Song
+				var sessionLineItem = new SessionLineItemOptions()
+				{
+					PriceData = new SessionLineItemPriceDataOptions()
+					{
+						UnitAmount = 0,
+						Currency = "eur",
+						ProductData = new SessionLineItemPriceDataProductDataOptions()
+						{
+							Name = setListSong.Song.Title,
+							Description = setListSong.Song.Artist
+						}
+					},
+					Quantity = 1,
+				};
+				options.LineItems.Add(sessionLineItem);
+			}
+
+			foreach (var setListService in SetListVM.ServiceList)
+			{
+				// Service fixed price
+				var sessionLineItem = new SessionLineItemOptions()
+				{
+					PriceData = new SessionLineItemPriceDataOptions()
+					{
+						UnitAmount = (long)(setListService.Service.PriceFixed * 100), // 20,50€ => 2050
+						Currency = "eur",
+						ProductData = new SessionLineItemPriceDataProductDataOptions()
+						{
+							Name = setListService.Service.Name + ", fixed price"
+						}
+					},
+					Quantity = 1,
+				};
+				options.LineItems.Add(sessionLineItem);
+
+				// Service variable price (per song)
+				sessionLineItem = new SessionLineItemOptions()
+				{
+					PriceData = new SessionLineItemPriceDataOptions()
+					{
+						UnitAmount = (long)(setListService.Service.PricePerSong * 100), // 20,50€ => 2050
+						Currency = "eur",
+						ProductData = new SessionLineItemPriceDataProductDataOptions()
+						{
+							Name = setListService.Service.Name + ", price per song"
+						}
+					},
+					Quantity = songsQuantity,
+				};
+				options.LineItems.Add(sessionLineItem);
+			}
+
+            return options;
 		}
 	}
 }
