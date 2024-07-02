@@ -14,8 +14,8 @@ var builder = WebApplication.CreateBuilder(args);
 new EnvLoader().Load();
 var envVarReader = new EnvReader();
 // Get connectionString
-string serverName = envVarReader["AppSettings_DefaultConnection_ServerName"];
-string databaseName = envVarReader["AppSettings_DefaultConnection_DatabaseName"];
+string serverName = envVarReader["ConnectionString_DefaultConnection_ServerName"];
+string databaseName = envVarReader["ConnectionString_DefaultConnection_DatabaseName"];
 string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 connectionString = connectionString?.Replace("ServerName", serverName);
 connectionString = connectionString?.Replace("DatabaseName", databaseName);
