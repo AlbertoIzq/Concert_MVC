@@ -104,9 +104,19 @@ namespace ConcertWeb.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            _unitOfWork.Language.Remove(language);
-            _unitOfWork.Save();
-            TempData["success"] = "Language deleted successfully";
+            var songsWithThisLanguage = _unitOfWork.Song.GetAll(u => u.LanguageId == id).ToList();
+
+            if (songsWithThisLanguage.Count() > 0)
+            {
+				TempData["warning"] = "You cannot delete this language because it's already used in some songs";
+			}
+            else
+            {
+				_unitOfWork.Language.Remove(language);
+				_unitOfWork.Save();
+				TempData["success"] = "Language deleted successfully";
+			}
+            
             return RedirectToAction("Index");
         }
 

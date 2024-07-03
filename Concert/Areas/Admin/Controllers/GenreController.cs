@@ -104,9 +104,20 @@ namespace ConcertWeb.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            _unitOfWork.Genre.Remove(genre);
-            _unitOfWork.Save();
-            TempData["success"] = "Genre deleted successfully";
+			var songsWithThisGenre = _unitOfWork.Song.GetAll(u => u.GenreId == id).ToList();
+
+			if (songsWithThisGenre.Count() > 0)
+			{
+				TempData["warning"] = "You cannot delete this genre because it's already used in some songs";
+			}
+			else
+			{
+				_unitOfWork.Genre.Remove(genre);
+				_unitOfWork.Save();
+				TempData["success"] = "Genre deleted successfully";
+			}
+
+			
             return RedirectToAction("Index");
         }
 
