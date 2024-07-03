@@ -25,7 +25,7 @@ namespace Concert.Models
         public TimeSpan Length { get; set; }
 
         [Required(ErrorMessage = "Required field.")]
-        [Range(1900, 2100, ErrorMessage = "It must be between 1900 and 2100.")]
+        [Range(1200, 2100, ErrorMessage = "It must be between 1200 and 2100.")]
         [DisplayName("Release Year")]
         public int ReleaseYear { get; set; }
 
