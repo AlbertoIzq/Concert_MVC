@@ -28,11 +28,11 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-area="Customer" asp-controller="Home" asp-action="Services">Services</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="Customer" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
                         @if(User.IsInRole(SD.ROLE_ADMIN))
                         {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Admin" asp-controller="Order" asp-action="Index">Manage Order</a>
+                            </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     Content Management
@@ -42,8 +42,8 @@
                                     <li><a class="dropdown-item" asp-area="Admin" asp-controller="Language" asp-action="Index">Language</a></li>
                                     <li><a class="dropdown-item" asp-area="Admin" asp-controller="Song" asp-action="Index">Song</a></li>
                                     <li><a class="dropdown-item" asp-area="Admin" asp-controller="Service" asp-action="Index">Service</a></li>
-                                    <li><a class="dropdown-item" asp-area="Admin" asp-controller="Company" asp-action="Index">Company</a></li>
                                     <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" asp-area="Admin" asp-controller="Company" asp-action="Index">Company</a></li>
                                 </ul>
                             </li>
                         }
