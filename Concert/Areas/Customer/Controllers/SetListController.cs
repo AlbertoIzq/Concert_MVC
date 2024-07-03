@@ -161,7 +161,36 @@ namespace ConcertWeb.Areas.Customer.Controllers
 
         public IActionResult OrderConfirmation(int id)
         {
-            return View(id);
+            OrderHeader orderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == id, includeProperties: "ApplicationUser");
+
+			// It's an order by a costumer
+			if (orderHeader.PaymentStatus != SD.PAYMENT_STATUS_DELAYED_PAYMENT)
+            {
+                var service = new SessionService();
+                Session session = service.Get(orderHeader.SessionId);
+
+                if (session.PaymentStatus.ToLower() == "paid")
+                {
+					_unitOfWork.OrderHeader.UpdateStripePaymentId(id, session.Id, session.PaymentIntentId);
+                    _unitOfWork.OrderHeader.UpdateStatus(id, SD.STATUS_APPROVED, SD.PAYMENT_STATUS_APPROVED);
+                    _unitOfWork.Save();
+				}
+            }
+
+            // Empty SetListSong
+            List<SetListSong> setListSongs = _unitOfWork.SetListSong.
+                GetAll(u => u.ApplicationUserId == orderHeader.ApplicationUserId).ToList();
+            _unitOfWork.SetListSong.RemoveRange(setListSongs);
+            _unitOfWork.Save();
+
+			// Empty SetListSong except default service
+			List<SetListService> setListServices = _unitOfWork.SetListService.
+				GetAll(u => u.ApplicationUserId == orderHeader.ApplicationUserId).ToList();
+            setListServices = setListServices.Where(u => u.ServiceId != 1).ToList();
+			_unitOfWork.SetListService.RemoveRange(setListServices);
+			_unitOfWork.Save();
+
+			return View(id);
         }
 
 		public IActionResult SetBefore(int id)

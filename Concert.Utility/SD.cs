@@ -21,7 +21,7 @@ namespace Concert.Utility
 		public const string STATUS_REFUNDED = "Refunded";
 
 		public const string PAYMENT_STATUS_PENDING = "Pending";
-		public const string PAYMENT_STATUS_APPROVED = "Refunded";
+		public const string PAYMENT_STATUS_APPROVED = "Approved";
 		public const string PAYMENT_STATUS_DELAYED_PAYMENT = "ApprovedForDelayedPayment";
 		public const string PAYMENT_STATUS_REJECTED = "Rejected";
 	}
