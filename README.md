@@ -8,5 +8,3 @@ ___TODO___
 - Add a way to sort songs in Home/Index by Language or by Genre
 - Change format of Home/Services
 - Add service by default to user when accessing setlist if he doesn't have it
-- Order songs in Home by Title
-- Order Genres and Languages by name in Content management views

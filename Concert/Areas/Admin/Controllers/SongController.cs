@@ -34,12 +34,12 @@ namespace ConcertWeb.Areas.Admin.Controllers
         {
             SongVM songVM = new()
             {
-                GenreList = _unitOfWork.Genre.GetAll().Select(u => new SelectListItem()
+                GenreList = _unitOfWork.Genre.GetAll().OrderBy(u => u.Name).Select(u => new SelectListItem()
                 {
                     Text = u.Name,
                     Value = u.Id.ToString()
                 }),
-                LanguageList = _unitOfWork.Language.GetAll().Select(u => new SelectListItem()
+                LanguageList = _unitOfWork.Language.GetAll().OrderBy(u => u.Name).Select(u => new SelectListItem()
                 {
                     Text = u.Name,
                     Value = u.Id.ToString()
