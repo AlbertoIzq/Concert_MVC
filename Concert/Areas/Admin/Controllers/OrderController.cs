@@ -6,6 +6,7 @@ using Concert.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Diagnostics;
 
 namespace ConcertWeb.Areas.Admin.Controllers
 {
@@ -28,9 +29,28 @@ namespace ConcertWeb.Areas.Admin.Controllers
         #region ApiCalls
 
         [HttpGet]
-        public IActionResult GetAll()
+        public IActionResult GetAll(string status)
         {
-            List<OrderHeader> orderHeaderList = _unitOfWork.OrderHeader.GetAll(includeProperties: "ApplicationUser").ToList();
+            IEnumerable<OrderHeader> orderHeaderList = _unitOfWork.OrderHeader.GetAll(includeProperties: "ApplicationUser").ToList();
+
+            switch (status)
+            {
+                case "pending":
+                    orderHeaderList = orderHeaderList.Where(u => u.PaymentStatus == SD.PAYMENT_STATUS_DELAYED_PAYMENT);
+                    break;
+                case "inprocess":
+                    orderHeaderList = orderHeaderList.Where(u => u.OrderStatus == SD.STATUS_IN_PROCESS);
+                    break;
+                case "completed":
+                    orderHeaderList = orderHeaderList.Where(u => u.OrderStatus == SD.STATUS_SHIPPED);
+                    break;
+                case "approved":
+                    orderHeaderList = orderHeaderList.Where(u => u.OrderStatus == SD.STATUS_APPROVED);
+                    break;
+                default:
+                    break;
+            }
+
             return Json(new { data = orderHeaderList });
         }
 
