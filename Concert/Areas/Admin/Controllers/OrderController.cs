@@ -26,6 +26,18 @@ namespace ConcertWeb.Areas.Admin.Controllers
             return View();
         }
 
+        public IActionResult Details(int orderId)
+        {
+            OrderVM orderVM = new()
+            {
+                OrderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == orderId, includeProperties: "ApplicationUser"),
+                OrderDetailSongs = _unitOfWork.OrderDetailSong.GetAll(u => u.OrderHeaderId == orderId, includeProperties: "Song"),
+                OrderDetailServices = _unitOfWork.OrderDetailService.GetAll(u => u.OrderHeaderId == orderId, includeProperties: "Service")
+            };
+
+            return View(orderVM);
+        }
+
         #region ApiCalls
 
         [HttpGet]
