@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace ConcertWeb.Areas.Admin.Controllers
 {
@@ -70,6 +71,15 @@ namespace ConcertWeb.Areas.Admin.Controllers
         public IActionResult GetAll(string status)
         {
             IEnumerable<OrderHeader> orderHeaderList = _unitOfWork.OrderHeader.GetAll(includeProperties: "ApplicationUser").ToList();
+
+            // If user isn't admin or employee, then he/she can only see his/her own orders
+            if (!User.IsInRole(SD.ROLE_ADMIN) && !User.IsInRole(SD.ROLE_EMPLOYEE))
+            {
+                var claimsIdentity = (ClaimsIdentity)User.Identity;
+                var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+                
+                orderHeaderList = orderHeaderList.Where(u => u.ApplicationUserId == userId).ToList();
+            }
 
             switch (status)
             {
