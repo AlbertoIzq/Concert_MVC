@@ -14,7 +14,7 @@ namespace ConcertWeb.Areas.Customer.Controllers
 {
     [Area("Customer")]
     [Authorize]
-    public class SetListController : Controller
+    public class SetListController : BaseController
     {
         private readonly IUnitOfWork _unitOfWork;
         [BindProperty]

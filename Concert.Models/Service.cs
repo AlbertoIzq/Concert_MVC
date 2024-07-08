@@ -19,12 +19,12 @@ namespace Concert.Models
         public string Description { get; set; }
 
         [Required(ErrorMessage = "Required field.")]
-        [Display(Name = "Fixed price")]
+        [Display(Name = "Fixed price (€)")]
         [Range(1, 100000)]
         public double PriceFixed { get; set; }
 
         [Required(ErrorMessage = "Required field.")]
-        [Display(Name = "Price per song")]
+        [Display(Name = "Price per song (€)")]
         [Range(1, 100000)]
         public double PricePerSong { get; set; }
     }

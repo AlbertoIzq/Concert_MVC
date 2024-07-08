@@ -12,7 +12,7 @@ namespace ConcertWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = SD.ROLE_ADMIN)]
-    public class OrderController : Controller
+    public class OrderController : BaseController
     {
         private readonly IUnitOfWork _unitOfWork;
 

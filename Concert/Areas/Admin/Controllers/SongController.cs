@@ -11,7 +11,7 @@ namespace ConcertWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = SD.ROLE_ADMIN)]
-    public class SongController : Controller
+    public class SongController : BaseController
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _webHostEnvironment;

@@ -17,7 +17,8 @@ namespace Concert.Models
         public ApplicationUser ApplicationUser { get; set; }
 
         public DateTime OrderDate { get; set; }
-        public double OrderTotal { get; set; }
+		[DisplayName("Order total (€)")]
+		public double OrderTotal { get; set; }
         public string? OrderStatus { get; set; }
 
         public string? PaymentStatus { get; set; }

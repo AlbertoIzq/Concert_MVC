@@ -9,7 +9,7 @@ namespace ConcertWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = SD.ROLE_ADMIN)]
-    public class GenreController : Controller
+    public class GenreController : BaseController
     {
         private readonly IUnitOfWork _unitOfWork;
 
