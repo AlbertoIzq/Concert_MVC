@@ -16,6 +16,9 @@ namespace ConcertWeb.Areas.Admin.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
 
+        [BindProperty]
+        public OrderVM OrderVM { get; set; }
+
         public OrderController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
         {
             _unitOfWork = unitOfWork;
@@ -28,19 +31,42 @@ namespace ConcertWeb.Areas.Admin.Controllers
 
         public IActionResult Details(int orderId)
         {
-            OrderVM orderVM = new()
+			OrderVM = new()
             {
                 OrderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == orderId, includeProperties: "ApplicationUser"),
                 OrderDetailSongs = _unitOfWork.OrderDetailSong.GetAll(u => u.OrderHeaderId == orderId, includeProperties: "Song"),
                 OrderDetailServices = _unitOfWork.OrderDetailService.GetAll(u => u.OrderHeaderId == orderId, includeProperties: "Service")
             };
 
-            return View(orderVM);
+            return View(OrderVM);
         }
 
-        #region ApiCalls
+        [HttpPost]
+        [Authorize(Roles = SD.ROLE_ADMIN + "," + SD.ROLE_EMPLOYEE)]
+		public IActionResult UpdateOrderDetail()
+		{
+            var orderHeaderFromDb = _unitOfWork.OrderHeader.Get(u => u.Id == OrderVM.OrderHeader.Id);
 
-        [HttpGet]
+            orderHeaderFromDb.Name = OrderVM.OrderHeader.Name;
+			orderHeaderFromDb.Surname = OrderVM.OrderHeader.Surname;
+			orderHeaderFromDb.PhoneNumber = OrderVM.OrderHeader.PhoneNumber;
+			orderHeaderFromDb.StreetAddress = OrderVM.OrderHeader.StreetAddress;
+			orderHeaderFromDb.City = OrderVM.OrderHeader.City;
+			orderHeaderFromDb.State = OrderVM.OrderHeader.State;
+			orderHeaderFromDb.Country = OrderVM.OrderHeader.Country;
+			orderHeaderFromDb.PostalCode = OrderVM.OrderHeader.PostalCode;
+
+            _unitOfWork.OrderHeader.Update(orderHeaderFromDb);
+            _unitOfWork.Save();
+
+            TempData["success"] = "Order details updated successfully";
+
+			return RedirectToAction(nameof(Details), new {orderId = orderHeaderFromDb.Id});
+		}
+
+		#region ApiCalls
+
+		[HttpGet]
         public IActionResult GetAll(string status)
         {
             IEnumerable<OrderHeader> orderHeaderList = _unitOfWork.OrderHeader.GetAll(includeProperties: "ApplicationUser").ToList();
