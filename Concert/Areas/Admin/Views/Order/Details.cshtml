@@ -24,7 +24,7 @@
                                     <span class="text-primary">Concert Details</span>
                                 </h4>
                             </div>
-                            <div class="row my-1">
+                            <div class="row my-2">
                                 <div class="col-3">Name</div>
                                 <div class="col-9">
                                     @if (User.IsInRole(SD.ROLE_ADMIN) || User.IsInRole(SD.ROLE_EMPLOYEE))
@@ -38,7 +38,7 @@
                                     }
                                 </div>
                             </div>
-                            <div class="row my-1">
+                            <div class="row my-2">
                                 <div class="col-3">Surname</div>
                                 <div class="col-9">
                                     @if (User.IsInRole(SD.ROLE_ADMIN) || User.IsInRole(SD.ROLE_EMPLOYEE))
@@ -52,7 +52,7 @@
                                     }
                                 </div>
                             </div>
-                            <div class="row my-1">
+                            <div class="row my-2">
                                 <div class="col-3">Phone number</div>
                                 <div class="col-9">
                                     @if (User.IsInRole(SD.ROLE_ADMIN) || User.IsInRole(SD.ROLE_EMPLOYEE))
@@ -66,7 +66,7 @@
                                     }
                                 </div>
                             </div>
-                            <div class="row my-1">
+                            <div class="row my-2">
                                 <div class="col-3">Street address</div>
                                 <div class="col-9">
                                     @if (User.IsInRole(SD.ROLE_ADMIN) || User.IsInRole(SD.ROLE_EMPLOYEE))
@@ -80,7 +80,7 @@
                                     }
                                 </div>
                             </div>
-                            <div class="row my-1">
+                            <div class="row my-2">
                                 <div class="col-3">City</div>
                                 <div class="col-9">
                                     @if (User.IsInRole(SD.ROLE_ADMIN) || User.IsInRole(SD.ROLE_EMPLOYEE))
@@ -94,19 +94,19 @@
                                     }
                                 </div>
                             </div>
-                            <div class="row my-1">
+                            <div class="row my-2">
                                 <div class="col-3">State</div>
                                 <div class="col-9">
                                     <input asp-for="OrderHeader.State" readonly type="text" class="form-control" />
                                 </div>
                             </div>
-                            <div class="row my-1">
+                            <div class="row my-2">
                                 <div class="col-3">Country</div>
                                 <div class="col-9">
                                     <input asp-for="OrderHeader.Country" readonly type="text" class="form-control" />
                                 </div>
                             </div>
-                            <div class="row my-1">
+                            <div class="row my-2">
                                 <div class="col-3">Postal code</div>
                                 <div class="col-9">
                                     @if (User.IsInRole(SD.ROLE_ADMIN) || User.IsInRole(SD.ROLE_EMPLOYEE))
@@ -120,19 +120,19 @@
                                     }
                                 </div>
                             </div>
-                            <div class="row my-1">
+                            <div class="row my-2">
                                 <div class="col-3">Email</div>
                                 <div class="col-9">
                                     <input asp-for="OrderHeader.ApplicationUser.Email" readonly type="text" class="form-control" />
                                 </div>
                             </div>
-                            <div class="row my-1">
+                            <div class="row my-2">
                                 <div class="col-3">Order Date</div>
                                 <div class="col-9">
                                     <input value="@Model.OrderHeader.OrderDate.ToShortDateString()" readonly type="text" class="form-control" />
                                 </div>
                             </div>
-                            <div class="row my-1">
+                            <div class="row my-2">
                                 <div class="col-3">Concert Date</div>
                                 <div class="col-9">
                                     <input value="@Model.OrderHeader.ConcertDate.ToShortDateString()" readonly type="text" class="form-control" />
@@ -140,13 +140,13 @@
                             </div>
                             @if (User.IsInRole(SD.ROLE_ADMIN) || User.IsInRole(SD.ROLE_EMPLOYEE))
                             {
-                                <div class="row my-1">
+                                <div class="row my-2">
                                     <div class="col-3">Session ID</div>
                                     <div class="col-9">
                                         <input asp-for="OrderHeader.SessionId" readonly type="text" class="form-control" />
                                     </div>
                                 </div>
-                                <div class="row my-1">
+                                <div class="row my-2">
                                     <div class="col-3">Payment Intent ID</div>
                                     <div class="col-9">
                                         <input asp-for="OrderHeader.PaymentIntentId" readonly type="text" class="form-control" />
@@ -155,7 +155,7 @@
                             }
                             @if (Model.OrderHeader.SessionId == null)
                             {
-                                <div class="row my-1">
+                                <div class="row my-2">
                                     <div class="col-3">Payment due date</div>
                                     <div class="col-9">
                                         <input value="@Model.OrderHeader.PaymentDueDate.ToShortDateString()" readonly type="text" class="form-control" />
@@ -164,14 +164,14 @@
                             }
                             else
                             {
-                                <div class="row my-1">
+                                <div class="row my-2">
                                     <div class="col-3">Payment date</div>
                                     <div class="col-9">
                                         <input value="@Model.OrderHeader.PaymentDate.ToShortDateString()" readonly type="text" class="form-control" />
                                     </div>
                                 </div>
                             }
-                            <div class="row my-1">
+                            <div class="row my-2">
                                 <div class="col-3">Payment Status</div>
                                 <div class="col-9">
                                     <input asp-for="OrderHeader.PaymentStatus" readonly type="text" class="form-control" />
@@ -229,10 +229,28 @@
                                     </div>
                                 </li>
                             </ul>
-                            <input type="submit" class="btn btn-success form-control my-1" value="Pay Now" />
-                            <input type="submit" class="btn btn-primary form-control my-1" value="Start Processing" />
-                            <input type="submit" class="btn btn-primary form-control my-1" value="Ship Order" />
-                            <input type="submit" class="btn btn-danger form-control my-1" value="Cancel Order" />
+                            @if (Model.OrderHeader.PaymentStatus == SD.PAYMENT_STATUS_DELAYED_PAYMENT &&
+                            Model.OrderHeader.OrderStatus == SD.STATUS_SHIPPED)
+                            {
+                                <button type="submit" class="btn btn-success form-control my-1">Pay Now</button>
+                            }
+                            @if (User.IsInRole(SD.ROLE_ADMIN) || User.IsInRole(SD.ROLE_EMPLOYEE))
+                            {
+                                if (Model.OrderHeader.OrderStatus == SD.STATUS_APPROVED)
+                                {
+                                    <button type="submit" class="btn btn-primary form-control my-1">Start Processing</button>
+                                }
+                                if (Model.OrderHeader.OrderStatus == SD.STATUS_IN_PROCESS)
+                                {
+                                    <button type="submit" class="btn btn-primary form-control my-1">Ship Order</button>
+                                }
+                                if (Model.OrderHeader.OrderStatus != SD.STATUS_REFUNDED &&
+                                Model.OrderHeader.OrderStatus != SD.STATUS_CANCELLED &&
+                                Model.OrderHeader.OrderStatus != SD.STATUS_SHIPPED)
+                                {
+                                    <button type="submit" class="btn btn-danger form-control my-1">Cancel Order</button>
+                                }
+                            }
                         </div>
                     </div>
                 </div>
