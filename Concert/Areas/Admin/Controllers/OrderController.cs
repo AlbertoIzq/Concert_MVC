@@ -11,7 +11,7 @@ using System.Diagnostics;
 namespace ConcertWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = SD.ROLE_ADMIN)]
+    [Authorize]
     public class OrderController : BaseController
     {
         private readonly IUnitOfWork _unitOfWork;
