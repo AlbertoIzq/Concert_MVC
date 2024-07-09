@@ -19,9 +19,11 @@ namespace Concert.Models
         public DateTime OrderDate { get; set; }
 		[DisplayName("Order total (€)")]
 		public double OrderTotal { get; set; }
-        public string? OrderStatus { get; set; }
+        public DateTime ConfirmationDate { get; set; }
 
+        public string? OrderStatus { get; set; }
         public string? PaymentStatus { get; set; }
+        
         public DateTime PaymentDate { get; set; }
         public DateOnly PaymentDueDate { get; set; }
 

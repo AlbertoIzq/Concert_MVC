@@ -138,6 +138,12 @@
                                     <input value="@Model.OrderHeader.ConcertDate.ToShortDateString()" readonly type="text" class="form-control" />
                                 </div>
                             </div>
+                            <div class="row my-2">
+                                <div class="col-3">Confirmation Date</div>
+                                <div class="col-9">
+                                    <input value="@Model.OrderHeader.ConfirmationDate.ToShortDateString()" readonly type="text" class="form-control" />
+                                </div>
+                            </div>
                             @if (User.IsInRole(SD.ROLE_ADMIN) || User.IsInRole(SD.ROLE_EMPLOYEE))
                             {
                                 <div class="row my-2">
