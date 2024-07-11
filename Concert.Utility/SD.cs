@@ -23,7 +23,9 @@ namespace Concert.Utility
 		public const string PAYMENT_STATUS_PENDING = "Pending";
 		public const string PAYMENT_STATUS_APPROVED = "Approved";
 		public const string PAYMENT_STATUS_DELAYED_PAYMENT = "ApprovedForDelayedPayment";
-		public const string PAYMENT_STATUS_REJECTED = "Rejected";
+        public const string PAYMENT_STATUS_REFUNDED = "Refunded";
+        public const string PAYMENT_STATUS_CANCELLED = "Cancelled";
+        public const string PAYMENT_STATUS_REJECTED = "Rejected";
 
 		public const int PAYMENT_DELAYED_DAYS = 30;
 	}

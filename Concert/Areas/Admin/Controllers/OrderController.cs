@@ -6,6 +6,7 @@ using Concert.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Stripe;
 using Stripe.Climate;
 using System.Diagnostics;
 using System.Security.Claims;
@@ -94,6 +95,37 @@ namespace ConcertWeb.Areas.Admin.Controllers
             TempData["success"] = "Order confirmed successfully";
 
             return RedirectToAction(nameof(Details), new { orderId = orderId });
+        }
+
+        [HttpPost]
+        [Authorize(Roles = SD.ROLE_ADMIN + "," + SD.ROLE_EMPLOYEE)]
+        public IActionResult CancelOrder()
+        {
+            var orderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == OrderVM.OrderHeader.Id);
+
+            // We refund the customer only if the payment was already done
+            if (orderHeader.PaymentStatus == SD.PAYMENT_STATUS_APPROVED)
+            {
+                var options = new RefundCreateOptions
+                {
+                    Reason = RefundReasons.RequestedByCustomer,
+                    PaymentIntent = orderHeader.PaymentIntentId
+                };
+
+                var service = new RefundService();
+                Refund refund = service.Create(options);
+
+                _unitOfWork.OrderHeader.UpdateStatus(orderHeader.Id, SD.STATUS_CANCELLED, SD.PAYMENT_STATUS_REFUNDED);
+            }
+            else
+            {
+                _unitOfWork.OrderHeader.UpdateStatus(orderHeader.Id, SD.STATUS_CANCELLED, SD.PAYMENT_STATUS_CANCELLED);
+            }
+
+            _unitOfWork.Save();
+            TempData["success"] = "Order cancelled successfully";
+
+            return RedirectToAction(nameof(Details), new { orderId = OrderVM.OrderHeader.Id });
         }
 
         #region ApiCalls
