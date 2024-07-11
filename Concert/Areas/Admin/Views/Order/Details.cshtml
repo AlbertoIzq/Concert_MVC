@@ -236,7 +236,7 @@
                                 </li>
                             </ul>
                             @if (Model.OrderHeader.PaymentStatus == SD.PAYMENT_STATUS_DELAYED_PAYMENT &&
-                            Model.OrderHeader.OrderStatus == SD.STATUS_SHIPPED)
+                            Model.OrderHeader.OrderStatus == SD.STATUS_CONFIRMED)
                             {
                                 <button type="submit" class="btn btn-success form-control my-1">Pay Now</button>
                             }
@@ -244,15 +244,16 @@
                             {
                                 if (Model.OrderHeader.OrderStatus == SD.STATUS_APPROVED)
                                 {
-                                    <button type="submit" class="btn btn-primary form-control my-1">Start Processing</button>
+                                    <button type="submit" asp-action="StartProcessing"
+                                    class="btn btn-primary form-control my-1">Start Processing</button>
                                 }
                                 if (Model.OrderHeader.OrderStatus == SD.STATUS_IN_PROCESS)
                                 {
-                                    <button type="submit" class="btn btn-primary form-control my-1">Ship Order</button>
+                                    <a onclick="ConfirmOrder(@Model.OrderHeader.Id)" class="btn btn-primary form-control my-1">Confirm Order</a>
                                 }
                                 if (Model.OrderHeader.OrderStatus != SD.STATUS_REFUNDED &&
                                 Model.OrderHeader.OrderStatus != SD.STATUS_CANCELLED &&
-                                Model.OrderHeader.OrderStatus != SD.STATUS_SHIPPED)
+                                Model.OrderHeader.OrderStatus != SD.STATUS_CONFIRMED)
                                 {
                                     <button type="submit" class="btn btn-danger form-control my-1">Cancel Order</button>
                                 }
@@ -264,3 +265,8 @@
         </div>
     </div>
 </form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/orderDetail.js"></script>
+}

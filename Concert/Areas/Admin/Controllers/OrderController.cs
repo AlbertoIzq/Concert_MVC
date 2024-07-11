@@ -6,6 +6,7 @@ using Concert.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Stripe.Climate;
 using System.Diagnostics;
 using System.Security.Claims;
 
@@ -65,9 +66,39 @@ namespace ConcertWeb.Areas.Admin.Controllers
 			return RedirectToAction(nameof(Details), new {orderId = orderHeaderFromDb.Id});
 		}
 
-		#region ApiCalls
+        [HttpPost]
+        [Authorize(Roles = SD.ROLE_ADMIN + "," + SD.ROLE_EMPLOYEE)]
+        public IActionResult StartProcessing()
+        {
+            _unitOfWork.OrderHeader.UpdateStatus(OrderVM.OrderHeader.Id, SD.STATUS_IN_PROCESS);
+            _unitOfWork.Save();
+            TempData["success"] = "Order details updated successfully";
 
-		[HttpGet]
+            return RedirectToAction(nameof(Details), new { orderId = OrderVM.OrderHeader.Id });
+        }
+
+        [HttpPost]
+        [Authorize(Roles = SD.ROLE_ADMIN + "," + SD.ROLE_EMPLOYEE)]
+        public IActionResult Confirm(int orderId)
+        {
+            var orderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == orderId);
+            orderHeader.OrderStatus = SD.STATUS_CONFIRMED;
+            orderHeader.ConfirmationDate = DateTime.Now;
+
+            if (orderHeader.PaymentStatus == SD.PAYMENT_STATUS_DELAYED_PAYMENT)
+            {
+                orderHeader.PaymentDueDate = DateOnly.FromDateTime(DateTime.Now.AddDays(SD.PAYMENT_DELAYED_DAYS));
+            }
+            _unitOfWork.OrderHeader.Update(orderHeader);
+            _unitOfWork.Save();
+            TempData["success"] = "Order confirmed successfully";
+
+            return RedirectToAction(nameof(Details), new { orderId = orderId });
+        }
+
+        #region ApiCalls
+
+        [HttpGet]
         public IActionResult GetAll(string status)
         {
             IEnumerable<OrderHeader> orderHeaderList = _unitOfWork.OrderHeader.GetAll(includeProperties: "ApplicationUser").ToList();
@@ -90,7 +121,7 @@ namespace ConcertWeb.Areas.Admin.Controllers
                     orderHeaderList = orderHeaderList.Where(u => u.OrderStatus == SD.STATUS_IN_PROCESS);
                     break;
                 case "completed":
-                    orderHeaderList = orderHeaderList.Where(u => u.OrderStatus == SD.STATUS_SHIPPED);
+                    orderHeaderList = orderHeaderList.Where(u => u.OrderStatus == SD.STATUS_CONFIRMED);
                     break;
                 case "approved":
                     orderHeaderList = orderHeaderList.Where(u => u.OrderStatus == SD.STATUS_APPROVED);
