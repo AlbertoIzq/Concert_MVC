@@ -7,11 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConcertWeb", "Concert\Conce
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConcertRazor_Temp", "ConcertRazor\ConcertRazor_Temp.csproj", "{029B6720-CB02-47B2-B8AF-47450FD71B08}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Concert.DataAccess", "Concert.DataAccess\Concert.DataAccess.csproj", "{FE792145-0AEF-4638-9A42-E411E51721DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Concert.DataAccess", "Concert.DataAccess\Concert.DataAccess.csproj", "{FE792145-0AEF-4638-9A42-E411E51721DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Concert.Models", "Concert.Models\Concert.Models.csproj", "{9780B5B0-B7E1-476A-8809-81928E0B4634}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Concert.Models", "Concert.Models\Concert.Models.csproj", "{9780B5B0-B7E1-476A-8809-81928E0B4634}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Concert.Utility", "Concert.Utility\Concert.Utility.csproj", "{E0DF0C71-450A-418B-9ADB-3AD003BCA77B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Concert.Utility", "Concert.Utility\Concert.Utility.csproj", "{E0DF0C71-450A-418B-9ADB-3AD003BCA77B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

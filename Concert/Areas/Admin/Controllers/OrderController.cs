@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Stripe;
+using Stripe.Checkout;
 using Stripe.Climate;
 using System.Diagnostics;
 using System.Security.Claims;
@@ -126,6 +127,57 @@ namespace ConcertWeb.Areas.Admin.Controllers
             TempData["success"] = "Order cancelled successfully";
 
             return RedirectToAction(nameof(Details), new { orderId = OrderVM.OrderHeader.Id });
+        }
+
+        [ActionName("Details")]
+        [HttpPost]
+        public IActionResult Details_PAY_NOW()
+        {
+            // We populate them again because when we're posting we may loose some information
+            OrderVM.OrderHeader = _unitOfWork.OrderHeader.
+                Get(u => u.Id == OrderVM.OrderHeader.Id, includeProperties: "ApplicationUser");
+            OrderVM.OrderDetailSongs = _unitOfWork.OrderDetailSong.
+                GetAll(u => u.OrderHeaderId == OrderVM.OrderHeader.Id, includeProperties: "Song");
+            OrderVM.OrderDetailServices = _unitOfWork.OrderDetailService.
+                GetAll(u => u.OrderHeaderId == OrderVM.OrderHeader.Id, includeProperties: "Service");
+
+            // Stripe logic
+            var service = new SessionService();
+            string successShortUrl = $"Admin/Order/PaymentConfirmation?orderHeaderId={OrderVM.OrderHeader.Id}";
+            string cancelShortUrl = $"Admin/Order/Details?orderId={OrderVM.OrderHeader.Id}";
+            var listSongs = OrderVM.OrderDetailSongs;
+            var listServices = OrderVM.OrderDetailServices;
+            var options = Methods.SetStripeOptions(successShortUrl, cancelShortUrl, listSongs, listServices);
+            Session session = service.Create(options);
+
+            // PaymentIntentId will be null because it's only populated once payment is successful
+            _unitOfWork.OrderHeader.UpdateStripePaymentId(OrderVM.OrderHeader.Id, session.Id, session.PaymentIntentId);
+            _unitOfWork.Save();
+            Response.Headers.Add("Location", session.Url);
+
+            // This means that we are redirecting to a new Url
+            return new StatusCodeResult(303);
+        }
+
+        public IActionResult PaymentConfirmation(int orderHeaderId)
+        {
+            OrderHeader orderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == orderHeaderId, includeProperties: "ApplicationUser");
+
+            // It's an order by a company
+            if (orderHeader.PaymentStatus == SD.PAYMENT_STATUS_DELAYED_PAYMENT)
+            {
+                var service = new SessionService();
+                Session session = service.Get(orderHeader.SessionId);
+
+                if (session.PaymentStatus.ToLower() == "paid")
+                {
+                    _unitOfWork.OrderHeader.UpdateStripePaymentId(orderHeaderId, session.Id, session.PaymentIntentId);
+                    _unitOfWork.OrderHeader.UpdateStatus(orderHeaderId, orderHeader.OrderStatus , SD.PAYMENT_STATUS_APPROVED);
+                    _unitOfWork.Save();
+                }
+            }
+
+            return View(orderHeaderId);
         }
 
         #region ApiCalls
