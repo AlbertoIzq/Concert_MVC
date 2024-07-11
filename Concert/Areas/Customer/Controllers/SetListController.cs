@@ -139,10 +139,35 @@ namespace ConcertWeb.Areas.Customer.Controllers
 				// If it's a regular customer account and we need to capture payment
 				if (applicationUser.CompanyId.GetValueOrDefault() == 0)
 				{
-					// Stripe logic
-					var service = new SessionService();
-                    var options = SetStripeOptions();
-					Session session = service.Create(options);
+                    // Stripe logic
+                    string successShortUrl = $"Customer/SetList/OrderConfirmation/{SetListVM.OrderHeader.Id}";
+                    string cancelShortUrl = "Customer/SetList/Index";
+
+                    // For SetStripeOptions method refactorized which is used also in OrderController
+                    var listSongs = new List<OrderDetailSong>();
+                    foreach (var setListSong in SetListVM.SongList)
+                    {
+                        var orderDetailSong = new OrderDetailSong()
+                        {
+                            SongId = setListSong.SongId,
+                            Song = setListSong.Song
+                        };
+                        listSongs.Add(orderDetailSong);
+                    }
+                    var listServices = new List<OrderDetailService>();
+                    foreach (var setListService in SetListVM.ServiceList)
+                    {
+                        var orderDetailService = new OrderDetailService()
+                        {
+                            ServiceId = setListService.ServiceId,
+                            Service = setListService.Service
+                        };
+                        listServices.Add(orderDetailService);
+                    }
+
+                    var service = new SessionService();
+                    var options = UtilityMethods.SetStripeOptions(successShortUrl, cancelShortUrl, listSongs, listServices);
+                    Session session = service.Create(options);
 
                     // PaymentIntentId will be null because it's only populated once payment is successful
                     _unitOfWork.OrderHeader.UpdateStripePaymentId(SetListVM.OrderHeader.Id, session.Id, session.PaymentIntentId);
@@ -332,77 +357,6 @@ namespace ConcertWeb.Areas.Customer.Controllers
 				_unitOfWork.OrderDetailService.Add(orderDetailService);
 				_unitOfWork.Save();
 			}
-		}
-
-        private SessionCreateOptions SetStripeOptions()
-        {
-			string domain = "http://localhost:5251/";
-
-			var options = new SessionCreateOptions
-			{
-				SuccessUrl = domain + $"Customer/SetList/OrderConfirmation/{SetListVM.OrderHeader.Id}",
-				CancelUrl = domain + "Customer/SetList/Index",
-				LineItems = new List<SessionLineItemOptions>(),
-				Mode = "payment",
-			};
-
-			int songsQuantity = SetListVM.SongList.Count();
-			foreach (var setListSong in SetListVM.SongList)
-			{
-				// Song
-				var sessionLineItem = new SessionLineItemOptions()
-				{
-					PriceData = new SessionLineItemPriceDataOptions()
-					{
-						UnitAmount = 0,
-						Currency = "eur",
-						ProductData = new SessionLineItemPriceDataProductDataOptions()
-						{
-							Name = setListSong.Song.Title,
-							Description = setListSong.Song.Artist
-						}
-					},
-					Quantity = 1,
-				};
-				options.LineItems.Add(sessionLineItem);
-			}
-
-			foreach (var setListService in SetListVM.ServiceList)
-			{
-				// Service fixed price
-				var sessionLineItem = new SessionLineItemOptions()
-				{
-					PriceData = new SessionLineItemPriceDataOptions()
-					{
-						UnitAmount = (long)(setListService.Service.PriceFixed * 100), // 20,50€ => 2050
-						Currency = "eur",
-						ProductData = new SessionLineItemPriceDataProductDataOptions()
-						{
-							Name = setListService.Service.Name + ", fixed price"
-						}
-					},
-					Quantity = 1,
-				};
-				options.LineItems.Add(sessionLineItem);
-
-				// Service variable price (per song)
-				sessionLineItem = new SessionLineItemOptions()
-				{
-					PriceData = new SessionLineItemPriceDataOptions()
-					{
-						UnitAmount = (long)(setListService.Service.PricePerSong * 100), // 20,50€ => 2050
-						Currency = "eur",
-						ProductData = new SessionLineItemPriceDataProductDataOptions()
-						{
-							Name = setListService.Service.Name + ", price per song"
-						}
-					},
-					Quantity = songsQuantity,
-				};
-				options.LineItems.Add(sessionLineItem);
-			}
-
-            return options;
 		}
 	}
 }

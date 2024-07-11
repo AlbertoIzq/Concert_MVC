@@ -4,7 +4,7 @@ using Concert.Models.ViewModels;
 
 namespace Concert.Utility
 {
-    public static class Methods
+    public static class UtilityMethods
     {
         public static SessionCreateOptions SetStripeOptions(string successShortUrl, string cancelShortUrl,
             IEnumerable<OrderDetailSong> listSongs, IEnumerable<OrderDetailService> listServices)

@@ -95,7 +95,7 @@ namespace ConcertWeb.Areas.Admin.Controllers
             _unitOfWork.Save();
             TempData["success"] = "Order confirmed successfully";
 
-            return RedirectToAction(nameof(Details), new { orderId = orderId });
+            return RedirectToAction(nameof(Details), new { orderId = orderHeader.Id });
         }
 
         [HttpPost]
@@ -126,7 +126,7 @@ namespace ConcertWeb.Areas.Admin.Controllers
             _unitOfWork.Save();
             TempData["success"] = "Order cancelled successfully";
 
-            return RedirectToAction(nameof(Details), new { orderId = OrderVM.OrderHeader.Id });
+            return RedirectToAction(nameof(Details), new { orderId = orderHeader.Id });
         }
 
         [ActionName("Details")]
@@ -142,12 +142,14 @@ namespace ConcertWeb.Areas.Admin.Controllers
                 GetAll(u => u.OrderHeaderId == OrderVM.OrderHeader.Id, includeProperties: "Service");
 
             // Stripe logic
-            var service = new SessionService();
             string successShortUrl = $"Admin/Order/PaymentConfirmation?orderHeaderId={OrderVM.OrderHeader.Id}";
             string cancelShortUrl = $"Admin/Order/Details?orderId={OrderVM.OrderHeader.Id}";
+            
             var listSongs = OrderVM.OrderDetailSongs;
             var listServices = OrderVM.OrderDetailServices;
-            var options = Methods.SetStripeOptions(successShortUrl, cancelShortUrl, listSongs, listServices);
+            
+            var service = new SessionService();
+            var options = UtilityMethods.SetStripeOptions(successShortUrl, cancelShortUrl, listSongs, listServices);
             Session session = service.Create(options);
 
             // PaymentIntentId will be null because it's only populated once payment is successful
