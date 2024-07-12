@@ -27,6 +27,8 @@ namespace Concert.Utility
         public const string PAYMENT_STATUS_CANCELLED = "Cancelled";
         public const string PAYMENT_STATUS_REJECTED = "Rejected";
 
-		public const int PAYMENT_DELAYED_DAYS = 30;
+        public const string SESSION_SETLIST = "SessionSetList";
+
+        public const int PAYMENT_DELAYED_DAYS = 30;
 	}
 }

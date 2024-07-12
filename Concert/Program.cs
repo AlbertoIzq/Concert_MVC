@@ -28,6 +28,15 @@ string secretKey = envVarReader["Stripe_SecretKey"];
 // Add the MVC service.
 builder.Services.AddControllersWithViews();
 
+// Add Session service
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(100);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 // Add the Razor Pages service. 
 builder.Services.AddRazorPages();
 
@@ -68,6 +77,7 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseSession();
 
 app.MapRazorPages();
 app.MapControllerRoute(

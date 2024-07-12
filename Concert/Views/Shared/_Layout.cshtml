@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -47,8 +50,11 @@
                                 </ul>
                             </li>
                         }
+                        @{
+                            int sessionSetList = HttpContextAccessor.HttpContext.Session.GetInt32(SD.SESSION_SETLIST) ?? 0;
+                        }
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="Customer" asp-controller="SetList" asp-action="Index"><i class="bi bi-file-music"></i> (0)</a>
+                            <a class="nav-link" asp-area="Customer" asp-controller="SetList" asp-action="Index"><i class="bi bi-file-music"></i> (@sessionSetList)</a>
                         </li>
                     </ul>
                     <partial name="_LoginPartial" />

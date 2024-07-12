@@ -106,6 +106,9 @@ namespace ConcertWeb.Areas.Customer.Controllers
 
                     _unitOfWork.SetListSong.Add(setListSong);
                     _unitOfWork.Save();
+                    // Update session SetList songs counter
+                    HttpContext.Session.SetInt32(SD.SESSION_SETLIST,
+                        _unitOfWork.SetListSong.GetAll(u => u.ApplicationUserId == userId).Count());
                     TempData["success"] = "Song added successfully to Set list";
                 }
             }
