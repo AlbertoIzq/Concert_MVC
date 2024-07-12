@@ -281,6 +281,9 @@ namespace ConcertWeb.Areas.Customer.Controllers
                 // Remove current song
                 _unitOfWork.SetListSong.Remove(setListSong);
                 _unitOfWork.Save();
+                TempData["success"] = "Song removed successfully from Set list";
+                HttpContext.Session.SetInt32(SD.SESSION_SETLIST,
+                    _unitOfWork.SetListSong.GetAll(u => u.ApplicationUserId == userId).Count());
             }
 
             return RedirectToAction(nameof(Index));
