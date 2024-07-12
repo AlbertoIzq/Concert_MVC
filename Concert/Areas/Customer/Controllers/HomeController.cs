@@ -22,18 +22,7 @@ namespace ConcertWeb.Areas.Customer.Controllers
 
         public IActionResult Index()
         {
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            if (claimsIdentity.IsAuthenticated != false)
-            {
-                var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
-
-                // If a user is logged in then we display SetList songs number
-                if (userId != null)
-                {
-                    HttpContext.Session.SetInt32(SD.SESSION_SETLIST,
-                        _unitOfWork.SetListSong.GetAll(u => u.ApplicationUserId == userId).Count());
-                }
-            }
+            
             
             IEnumerable<Song> songList = _unitOfWork.Song.GetAll(includeProperties: "Genre,Language").OrderBy(u => u.Artist);
 
