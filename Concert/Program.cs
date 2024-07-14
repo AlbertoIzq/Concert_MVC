@@ -53,6 +53,13 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
 });
 
+// Add an external login like Facebook
+/// @todo create app in facebook.com and get keys
+builder.Services.AddAuthentication().AddFacebook(option => {
+    option.AppId = "";
+    option.AppSecret = "";
+});
+
 // Add IUnitOfWork service
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 

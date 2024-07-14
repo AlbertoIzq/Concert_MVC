@@ -9,11 +9,11 @@ __TECHNOLOGIES USED__
 - SQL Server: Relational DataBase Management System (RDBMS)
 - Bootstrap: CSS Framework for developing responsive and mobile-first websites
 - Javascript libraries:
-Toastr: Gnome/Growl type non-blocking notifications
-TinyMCE: Rich text editor
-Datatables.net: Manipulate interactive and enhance tables
-Sweetalert2: Customizable alert popup boxes
-Stripe: Online payment processing solution
+  - Toastr: Gnome/Growl type non-blocking notifications
+  - TinyMCE: Rich text editor
+  - Datatables.net: Manipulate interactive and enhance tables
+  - Sweetalert2: Customizable alert popup boxes
+  - Stripe: Online payment processing solution
 
 ___TODO___
 
