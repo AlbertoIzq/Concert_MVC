@@ -54,10 +54,10 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 // Add an external login like Facebook
-/// @todo create app in facebook.com and get keys
+/// @todo create app in facebook.com and get keys, now they're only an example
 builder.Services.AddAuthentication().AddFacebook(option => {
-    option.AppId = "";
-    option.AppSecret = "";
+    option.AppId = "193813826680436";
+    option.AppSecret = "8fc42ae3f4f2a4986143461d4e2da919";
 });
 
 // Add IUnitOfWork service
