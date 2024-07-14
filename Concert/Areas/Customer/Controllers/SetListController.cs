@@ -200,6 +200,7 @@ namespace ConcertWeb.Areas.Customer.Controllers
                     _unitOfWork.OrderHeader.UpdateStatus(id, SD.STATUS_APPROVED, SD.PAYMENT_STATUS_APPROVED);
                     _unitOfWork.Save();
 				}
+                HttpContext.Session.Clear();
             }
 
             // Empty SetListSong
