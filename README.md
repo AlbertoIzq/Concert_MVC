@@ -14,6 +14,8 @@ __TECHNOLOGIES USED__
   - Datatables.net: Manipulate interactive and enhance tables
   - Sweetalert2: Customizable alert popup boxes
   - Stripe: Online payment processing solution
+- C# libraries:
+  - SendGrid: Twilio library to send emails
 
 ___TODO___
 

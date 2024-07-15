@@ -3,6 +3,7 @@ using Concert.Models;
 using Concert.Models.ViewModels;
 using Concert.Utility;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
@@ -17,12 +18,14 @@ namespace ConcertWeb.Areas.Customer.Controllers
     public class SetListController : BaseController
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IEmailSender _emailSender;
         [BindProperty]
         public SetListVM SetListVM { get; set; }
 
-        public SetListController(IUnitOfWork unitOfWork)
+        public SetListController(IUnitOfWork unitOfWork, IEmailSender emailSender)
         {
             _unitOfWork = unitOfWork;
+            _emailSender = emailSender;
         }
 
         public IActionResult Index()
@@ -202,6 +205,10 @@ namespace ConcertWeb.Areas.Customer.Controllers
 				}
                 HttpContext.Session.Clear();
             }
+
+            // Sender confirmation email
+            _emailSender.SendEmailAsync(orderHeader.ApplicationUser.Email, "New Order - Concert",
+                $"<p>New order created - {orderHeader.Id}</p>");
 
             // Empty SetListSong
             List<SetListSong> setListSongs = _unitOfWork.SetListSong.
