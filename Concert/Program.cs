@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Concert.Utility;
 using Stripe;
+using Concert.DataAccess.DbInitializer;
+using Concert.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -66,6 +68,9 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 // Add IEmailSender service
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 
+// Add IDbInitializer service
+builder.Services.AddScoped<IDbInitializer, DbInitializer>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -86,9 +91,46 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseSession();
 
+SeedDataBase(envVarReader);
+
 app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",
     pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+void SeedDataBase(EnvReader envReader)
+{
+    // Get AdminUser properties from env file
+    string email = envVarReader["AdminUser_Email"];
+    string name = envVarReader["AdminUser_Name"];
+    string surname = envVarReader["AdminUser_Surname"];
+    string streetAddress = envVarReader["AdminUser_StreetAddress"];
+    string city = envVarReader["AdminUser_City"];
+    string state = envVarReader["AdminUser_State"];
+    string country = envVarReader["AdminUser_Country"];
+    string postalCode = envVarReader["AdminUser_PostalCode"];
+    string phoneNumber = envVarReader["AdminUser_PhoneNumber"];
+    string password = envVarReader["AdminUser_Password"];
+
+    using (var scope = app.Services.CreateScope())
+    {
+        ApplicationUser adminUser = new()
+        {
+            UserName = email,
+            Email = email,
+            Name = name,
+            Surname = surname,
+            StreetAddress = streetAddress,
+            City = city,
+            State = state,
+            Country = country,
+            PostalCode = postalCode,
+            PhoneNumber = phoneNumber
+        };
+
+        var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+        dbInitializer.Initialize(adminUser, password);
+    }
+}
