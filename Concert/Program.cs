@@ -16,11 +16,21 @@ var builder = WebApplication.CreateBuilder(args);
 new EnvLoader().Load();
 var envVarReader = new EnvReader();
 // Get connectionString
-string serverName = envVarReader["ConnectionString_DefaultConnection_ServerName"];
-string databaseName = envVarReader["ConnectionString_DefaultConnection_DatabaseName"];
-string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-connectionString = connectionString?.Replace("ServerName", serverName);
-connectionString = connectionString?.Replace("DatabaseName", databaseName);
+string connectionString;
+string dataBaseUsed = envVarReader["DataBase_Used"];
+if (dataBaseUsed == SD.DATABASE_USED_LOCAL)
+{
+    connectionString = envVarReader[SD.DATABASE_USED_LOCAL_ENV];
+}
+else if (dataBaseUsed == SD.DATABASE_USED_AZURE)
+{
+    connectionString = envVarReader[SD.DATABASE_USED_AZURE_ENV];
+}
+else
+{
+    connectionString = string.Empty;
+}
+
 // Get Stripe keys
 string publishableKey = envVarReader["Stripe_PublishableKey"];
 string secretKey = envVarReader["Stripe_SecretKey"];

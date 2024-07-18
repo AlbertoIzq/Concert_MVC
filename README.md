@@ -26,6 +26,8 @@ _Areas/Customer
 - Add a way to sort songs in Home/Index by Language or by Genre
 - Change format of Home/Services
 - Add service by default to user when accessing setlist if he doesn't have it
+- Add Songs tab in Layout and move Home content to Songs tab
+- In Home tab add an explanation of how the Webpage works
 
 _General
 - Add /// comments to some methods
