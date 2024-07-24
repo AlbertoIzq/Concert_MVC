@@ -9,15 +9,29 @@ using Concert.Utility;
 using Stripe;
 using Concert.DataAccess.DbInitializer;
 using Concert.Models;
+using Concert.Utility.Secrets;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Environment variables management
+
+string envName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
 // Read environment variables.
 new EnvLoader().Load();
 var envVarReader = new EnvReader();
+
 // Get connectionString
-string envName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-string connectionString = envVarReader[SD.DATABASE_CONNECTION_STRING_ENV_NAME + envName];
+string connectionString = string.Empty;
+
+if (envName == SD.ENVIRONMENT_DEVELOPMENT)
+{
+    connectionString = envVarReader[SD.DATABASE_CONNECTION_STRING_ENV_NAME + envName];
+}
+else if (envName == SD.ENVIRONMENT_PRODUCTION)
+{
+    connectionString = Environment.GetEnvironmentVariable(SD.ENV_CONNECTION_STRING);
+}
 
 // Get Stripe keys
 string publishableKey = envVarReader["Stripe_PublishableKey"];
