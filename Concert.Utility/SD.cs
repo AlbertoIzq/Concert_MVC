@@ -8,11 +8,8 @@ namespace Concert.Utility
 {
     public static class SD
     {
-        public const string DATABASE_CONNECTION_STRING_ENV_NAME = "DataBase_ConnectionString_";
         public const string ENVIRONMENT_DEVELOPMENT = "Development";
         public const string ENVIRONMENT_PRODUCTION = "Production";
-
-        public const string ENV_CONNECTION_STRING = "ENV_CONNECTION_STRING";
 
         public const string ROLE_CUSTOMER = "Customer";
         public const string ROLE_COMPANY = "Company";

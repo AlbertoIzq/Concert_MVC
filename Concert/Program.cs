@@ -22,19 +22,30 @@ var envVarReader = new EnvReader();
 
 // Get connectionString
 string connectionString = string.Empty;
-
 if (envName == SD.ENVIRONMENT_DEVELOPMENT)
 {
-    connectionString = envVarReader[SD.DATABASE_CONNECTION_STRING_ENV_NAME + envName];
+    connectionString = envVarReader["DataBase_ConnectionString_Production"];
 }
 else if (envName == SD.ENVIRONMENT_PRODUCTION)
 {
-    connectionString = Environment.GetEnvironmentVariable(SD.ENV_CONNECTION_STRING);
+    connectionString = Environment.GetEnvironmentVariable("DataBase_ConnectionString_Production");
 }
 
 // Get Stripe keys
-string publishableKey = envVarReader["Stripe_PublishableKey"];
-string secretKey = envVarReader["Stripe_SecretKey"];
+string publishableKey = string.Empty;
+string secretKey = string.Empty;
+publishableKey = envVarReader["Stripe_PublishableKey"];
+secretKey = envVarReader["Stripe_SecretKey"];
+if (envName == SD.ENVIRONMENT_DEVELOPMENT)
+{
+    publishableKey = envVarReader["Stripe_PublishableKey"];
+    secretKey = envVarReader["Stripe_SecretKey"];
+}
+else if (envName == SD.ENVIRONMENT_PRODUCTION)
+{
+    publishableKey = Environment.GetEnvironmentVariable("Stripe_PublishableKey");
+    secretKey = Environment.GetEnvironmentVariable("Stripe_SecretKey");
+}
 
 // Add services to the container.
 
@@ -114,16 +125,43 @@ app.Run();
 void SeedDataBase(EnvReader envReader)
 {
     // Get AdminUser properties from env file
-    string email = envVarReader["AdminUser_Email"];
-    string name = envVarReader["AdminUser_Name"];
-    string surname = envVarReader["AdminUser_Surname"];
-    string streetAddress = envVarReader["AdminUser_StreetAddress"];
-    string city = envVarReader["AdminUser_City"];
-    string state = envVarReader["AdminUser_State"];
-    string country = envVarReader["AdminUser_Country"];
-    string postalCode = envVarReader["AdminUser_PostalCode"];
-    string phoneNumber = envVarReader["AdminUser_PhoneNumber"];
-    string password = envVarReader["AdminUser_Password"];
+    string email = string.Empty;
+    string name = string.Empty;
+    string surname = string.Empty;
+    string streetAddress = string.Empty;
+    string city = string.Empty;
+    string state = string.Empty;
+    string country = string.Empty;
+    string postalCode = string.Empty;
+    string phoneNumber = string.Empty;
+    string password = string.Empty;
+
+    if (envName == SD.ENVIRONMENT_DEVELOPMENT)
+    {
+        email = envVarReader["AdminUser_Email"];
+        name = envVarReader["AdminUser_Name"];
+        surname = envVarReader["AdminUser_Surname"];
+        streetAddress = envVarReader["AdminUser_StreetAddress"];
+        city = envVarReader["AdminUser_City"];
+        state = envVarReader["AdminUser_State"];
+        country = envVarReader["AdminUser_Country"];
+        postalCode = envVarReader["AdminUser_PostalCode"];
+        phoneNumber = envVarReader["AdminUser_PhoneNumber"];
+        password = envVarReader["AdminUser_Password"];
+    }
+    else if (envName == SD.ENVIRONMENT_PRODUCTION)
+    {
+        email = Environment.GetEnvironmentVariable("AdminUser_Email");
+        name = Environment.GetEnvironmentVariable("AdminUser_Name");
+        surname = Environment.GetEnvironmentVariable("AdminUser_Surname"); ;
+        streetAddress = Environment.GetEnvironmentVariable("AdminUser_StreetAddress");
+        city = Environment.GetEnvironmentVariable("AdminUser_City");
+        state = Environment.GetEnvironmentVariable("AdminUser_State");
+        country = Environment.GetEnvironmentVariable("AdminUser_Country");
+        postalCode = Environment.GetEnvironmentVariable("AdminUser_PostalCode");
+        phoneNumber = Environment.GetEnvironmentVariable("AdminUser_PhoneNumber");
+        password = Environment.GetEnvironmentVariable("AdminUser_Password");
+    }
 
     using (var scope = app.Services.CreateScope())
     {

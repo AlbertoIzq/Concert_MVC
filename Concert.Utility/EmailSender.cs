@@ -18,10 +18,20 @@ namespace Concert.Utility
 
         public EmailSender(IConfiguration _config)
         {
+            string envName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             new EnvLoader().Load();
             var envVarReader = new EnvReader();
-            SendGridSecret = envVarReader["SendGrid_SecretKey"];
-            SenderEmail = envVarReader["SendGrid_SenderEmail"];
+
+            if (envName == SD.ENVIRONMENT_DEVELOPMENT)
+            {
+                SendGridSecret = envVarReader["SendGrid_SecretKey"];
+                SenderEmail = envVarReader["SendGrid_SenderEmail"];
+            }
+            else if (envName == SD.ENVIRONMENT_PRODUCTION)
+            {
+                SendGridSecret = Environment.GetEnvironmentVariable("SendGrid_SecretKey");
+                SenderEmail = Environment.GetEnvironmentVariable("SendGrid_SenderEmail");
+            }
         }
 
         public Task SendEmailAsync(string email, string subject, string htmlMessage)
