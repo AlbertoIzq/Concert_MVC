@@ -9,7 +9,6 @@ using Concert.Utility;
 using Stripe;
 using Concert.DataAccess.DbInitializer;
 using Concert.Models;
-using Concert.Utility.Secrets;
 
 var builder = WebApplication.CreateBuilder(args);
 
