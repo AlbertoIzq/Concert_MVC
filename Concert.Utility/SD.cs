@@ -8,10 +8,7 @@ namespace Concert.Utility
 {
     public static class SD
     {
-        public const string DATABASE_USED_LOCAL = "Local";
-        public const string DATABASE_USED_AZURE = "Azure";
-        public const string DATABASE_USED_LOCAL_ENV = "DataBase_ConnectionString_Local";
-        public const string DATABASE_USED_AZURE_ENV = "DataBase_ConnectionString_Azure";
+        public const string DATABASE_CONNECTION_STRING_ENV_NAME = "DataBase_ConnectionString_";
 
         public const string ROLE_CUSTOMER = "Customer";
         public const string ROLE_COMPANY = "Company";

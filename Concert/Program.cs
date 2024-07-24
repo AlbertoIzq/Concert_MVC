@@ -16,20 +16,8 @@ var builder = WebApplication.CreateBuilder(args);
 new EnvLoader().Load();
 var envVarReader = new EnvReader();
 // Get connectionString
-string connectionString;
-string dataBaseUsed = envVarReader["DataBase_Used"];
-if (dataBaseUsed == SD.DATABASE_USED_LOCAL)
-{
-    connectionString = envVarReader[SD.DATABASE_USED_LOCAL_ENV];
-}
-else if (dataBaseUsed == SD.DATABASE_USED_AZURE)
-{
-    connectionString = envVarReader[SD.DATABASE_USED_AZURE_ENV];
-}
-else
-{
-    connectionString = string.Empty;
-}
+string envName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+string connectionString = envVarReader[SD.DATABASE_CONNECTION_STRING_ENV_NAME + envName];
 
 // Get Stripe keys
 string publishableKey = envVarReader["Stripe_PublishableKey"];
