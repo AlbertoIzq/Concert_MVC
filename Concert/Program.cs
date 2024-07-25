@@ -24,7 +24,7 @@ var envVarReader = new EnvReader();
 string connectionString = string.Empty;
 if (envName == SD.ENVIRONMENT_DEVELOPMENT)
 {
-    connectionString = envVarReader["DataBase_ConnectionString_Production"];
+    connectionString = envVarReader["DataBase_ConnectionString_Development"];
 }
 else if (envName == SD.ENVIRONMENT_PRODUCTION)
 {
