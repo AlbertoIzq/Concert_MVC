@@ -147,9 +147,10 @@ namespace ConcertWeb.Areas.Admin.Controllers
             
             var listSongs = OrderVM.OrderDetailSongs;
             var listServices = OrderVM.OrderDetailServices;
-            
+
             var service = new SessionService();
-            var options = UtilityMethods.SetStripeOptions(successShortUrl, cancelShortUrl, listSongs, listServices);
+            string domain = Request.Scheme + "://" + Request.Host.Value + "/";
+            var options = UtilityMethods.SetStripeOptions(successShortUrl, cancelShortUrl, listSongs, listServices, domain);
             Session session = service.Create(options);
 
             // PaymentIntentId will be null because it's only populated once payment is successful

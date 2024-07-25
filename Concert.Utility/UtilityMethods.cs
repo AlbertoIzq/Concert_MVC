@@ -7,10 +7,8 @@ namespace Concert.Utility
     public static class UtilityMethods
     {
         public static SessionCreateOptions SetStripeOptions(string successShortUrl, string cancelShortUrl,
-            IEnumerable<OrderDetailSong> listSongs, IEnumerable<OrderDetailService> listServices)
+            IEnumerable<OrderDetailSong> listSongs, IEnumerable<OrderDetailService> listServices, string domain)
         {
-            string domain = "http://localhost:5251/";
-
             var options = new SessionCreateOptions
             {
                 SuccessUrl = domain + successShortUrl,
