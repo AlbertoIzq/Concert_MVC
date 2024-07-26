@@ -3,6 +3,7 @@ using Concert.DataAccess.Repository.IRepository;
 using Concert.Models;
 using Concert.Models.ViewModels;
 using Concert.Utility;
+using DotEnv.Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -54,7 +55,7 @@ namespace ConcertWeb.Areas.Admin.Controllers
         public IActionResult LockUnlock([FromBody]string id)
         {
             var userFromDb = _db.ApplicationUser.FirstOrDefault(u => u.Id == id);
-            if (userFromDb == null)
+            if (userFromDb == null || userFromDb.Email == GetUserAdminEmail())
             {
                 return Json(new { success = false, message = "Error while locking/unlocking" });
             }
@@ -80,5 +81,25 @@ namespace ConcertWeb.Areas.Admin.Controllers
         }
 
         #endregion
+
+        private string GetUserAdminEmail()
+        {
+            string userAdminEmail = string.Empty;
+
+            string envName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            new EnvLoader().Load();
+            var envVarReader = new EnvReader();
+
+            if (envName == SD.ENVIRONMENT_DEVELOPMENT)
+            {
+                userAdminEmail = envVarReader["AdminUser_Email"];
+            }
+            else if (envName == SD.ENVIRONMENT_PRODUCTION)
+            {
+                userAdminEmail = Environment.GetEnvironmentVariable("AdminUser_Email");
+            }
+
+            return userAdminEmail;
+        }   
     }
 }
