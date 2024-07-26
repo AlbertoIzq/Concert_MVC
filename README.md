@@ -28,6 +28,7 @@ _TODO_
   - Add service by default to user when accessing setlist if he doesn't have it
   - Add Songs tab in Layout and move Home content to Songs tab
   - In Home tab add an explanation of how the Webpage works
+  - OrderStatus is STATUS_PENDING when we place an order, we go to stripe checkout page but then we come back without paying. We could add a custom status for this saying that the order went to cart but it didn't go through. I could create a cleanup job to remove those orders.
 
 - General
   - Add /// comments to some methods
