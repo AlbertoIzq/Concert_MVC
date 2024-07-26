@@ -33,5 +33,6 @@ namespace Concert.Utility
         public const string SESSION_SETLIST = "SessionSetList";
 
         public const int PAYMENT_DELAYED_DAYS = 30;
-	}
+        public const int USER_LOCK_YEARS = 100;
+    }
 }

@@ -50,10 +50,33 @@ namespace ConcertWeb.Areas.Admin.Controllers
             return Json(new { data = userList });
         }
 
-        [HttpDelete]
-        public IActionResult Delete(int? id)
+        [HttpPost]
+        public IActionResult LockUnlock([FromBody]string id)
         {
-            return Json(new { success = true, message = "Company deleted successfully" });
+            var userFromDb = _db.ApplicationUser.FirstOrDefault(u => u.Id == id);
+            if (userFromDb == null)
+            {
+                return Json(new { success = false, message = "Error while locking/unlocking" });
+            }
+
+            string operation = string.Empty;
+
+            // User is currently locked and we need to unlock them
+            if (userFromDb.LockoutEnd != null && userFromDb.LockoutEnd > DateTime.Now)
+            {
+                userFromDb.LockoutEnd = DateTime.Now;
+                operation = "unlocked";
+            }
+            else
+            {
+                userFromDb.LockoutEnd = DateTime.Now.AddYears(SD.USER_LOCK_YEARS);
+                operation = "Locked";
+            }
+
+            // This will work because the record is being tracked by EFC
+            _db.SaveChanges();
+
+            return Json(new { success = true, message = $"User {operation} successfully" });
         }
 
         #endregion
