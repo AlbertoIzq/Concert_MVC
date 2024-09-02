@@ -20,14 +20,17 @@ namespace ConcertWeb.Areas.Admin.Controllers
         private readonly ApplicationDbContext _db;
         private readonly IUnitOfWork _unitOfWork;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<IdentityUser> _userManager;
 
         public UserController(ApplicationDbContext db,
             IUnitOfWork unitOfWork,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            UserManager<IdentityUser> userManager)
         {
             _db = db;
             _unitOfWork = unitOfWork;
             _roleManager = roleManager;
+            _userManager = userManager;
         }
 
         public IActionResult Index()
@@ -60,6 +63,33 @@ namespace ConcertWeb.Areas.Admin.Controllers
             roleManagementVM.ApplicationUser.Role = _db.Roles.FirstOrDefault(u => u.Id == roleId).Name;
 
             return View(roleManagementVM);
+        }
+
+        [HttpPost]
+        public IActionResult RoleManagement(RoleManagementVM roleManagementVM)
+        {
+            string roleId = _db.UserRoles.FirstOrDefault(u => u.UserId == roleManagementVM.ApplicationUser.Id).RoleId;
+            string oldRole = _db.Roles.FirstOrDefault(u => u.Id == roleId).Name;
+
+            if (roleManagementVM.ApplicationUser.Role != oldRole)
+            {
+                // A Role was updated
+                ApplicationUser applicationUser = _db.ApplicationUser.FirstOrDefault(u => u.Id == roleManagementVM.ApplicationUser.Id);
+                if (roleManagementVM.ApplicationUser.Role == SD.ROLE_COMPANY)
+                {
+                    applicationUser.CompanyId = roleManagementVM.ApplicationUser.CompanyId;
+                }
+                if (oldRole == SD.ROLE_COMPANY)
+                {
+                    applicationUser.CompanyId = null;
+                }
+                _db.SaveChanges();
+
+                _userManager.RemoveFromRoleAsync(applicationUser, oldRole).GetAwaiter().GetResult();
+                _userManager.AddToRoleAsync(applicationUser, roleManagementVM.ApplicationUser.Role).GetAwaiter().GetResult();
+            }
+
+            return RedirectToAction("Index");
         }
 
         #region ApiCalls

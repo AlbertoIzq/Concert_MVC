@@ -37,3 +37,4 @@ _BUGS_
 
 - Areas/Admin
   - In Admin/Order/Details view, when clicking "Confirm Order" button, the order is confirmed but the page doesn't refresh with the updated status
+  - In Admin/User/RoleManagement, when Role is Company the Company dropdown is invisible by default but it should appear.
