@@ -1,10 +1,12 @@
 ﻿using Concert.DataAccess.Data;
+using Concert.DataAccess.Repository;
 using Concert.DataAccess.Repository.IRepository;
 using Concert.Models;
 using Concert.Models.ViewModels;
 using Concert.Utility;
 using DotEnv.Core;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -16,15 +18,48 @@ namespace ConcertWeb.Areas.Admin.Controllers
     public class UserController : BaseController
     {
         private readonly ApplicationDbContext _db;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public UserController(ApplicationDbContext db)
+        public UserController(ApplicationDbContext db,
+            IUnitOfWork unitOfWork,
+            RoleManager<IdentityRole> roleManager)
         {
             _db = db;
+            _unitOfWork = unitOfWork;
+            _roleManager = roleManager;
         }
 
         public IActionResult Index()
         {
             return View();
+        }
+
+        public IActionResult RoleManagement(string userId)
+        {
+            string roleId = _db.UserRoles.FirstOrDefault(u => u.UserId == userId).RoleId;
+
+            RoleManagementVM roleManagementVM = new()
+            {
+                // The same: ApplicationUser = _unitOfWork.ApplicationUser.Get(u => u.Id == userId, includeProperties: "Company")
+                ApplicationUser = _db.ApplicationUser.Include(u => u.Company).FirstOrDefault(u => u.Id == userId),
+                RoleList = _roleManager.Roles.Select(x => x.Name).Select(i => new SelectListItem
+                {
+                    Text = i,
+                    Value = i
+                }),
+                CompanyList = _unitOfWork.Company.GetAll().OrderBy(u => u.Name).Select(u => new SelectListItem()
+                {
+                    Text = u.Name,
+                    Value = u.Id.ToString()
+                }),
+                
+            };
+
+            // The same: roleManagementVM.ApplicationUser.Role = _userManager.GetRolesAsync(roleManagementVM.ApplicationUser).GetAwaiter().GetResult().FirstOrDefault();
+            roleManagementVM.ApplicationUser.Role = _db.Roles.FirstOrDefault(u => u.Id == roleId).Name;
+
+            return View(roleManagementVM);
         }
 
         #region ApiCalls
