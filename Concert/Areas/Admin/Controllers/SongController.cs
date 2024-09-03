@@ -50,7 +50,7 @@ namespace ConcertWeb.Areas.Admin.Controllers
             // Update, otherwise is Create
             if (id != null && id != 0)
             {
-                songVM.Song = _unitOfWork.Song.Get(u => u.Id == id);
+                songVM.Song = _unitOfWork.Song.Get(u => u.Id == id, includeProperties: "SongImages");
 
                 if (songVM.Song == null)
                 {

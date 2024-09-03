@@ -72,15 +72,23 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-2">
                 @{
                     if (Model.Song.Id != 0)
                     {
-                        // <div class="col-2">
-                        //     <img src="~/@Model.Song.ImageUrl" width="100%"
-                        //          style="border-radius:5px; border:1px solid #bbb9b9" />
-                        // </div>
+                        @if (Model.Song.SongImages != null)
+                        {
+                            foreach (var image in Model.Song.SongImages)
+                            {
+                                <div class=" border p-1 m-2 text-center">
+                                    <img src="@image.ImageUrl" width="100%"
+                                         style="border-radius:5px; border:1px solid #bbb9b9" />
+                                </div>
+                            }
+                        }
                     }
                 }
+                </div>
             </div>
         </form>
     </div>
