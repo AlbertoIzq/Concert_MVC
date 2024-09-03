@@ -58,7 +58,7 @@ namespace Concert.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Companies");
+                    b.ToTable("Companies", (string)null);
 
                     b.HasData(
                         new
@@ -114,7 +114,7 @@ namespace Concert.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Genres");
+                    b.ToTable("Genres", (string)null);
 
                     b.HasData(
                         new
@@ -155,7 +155,7 @@ namespace Concert.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Languages");
+                    b.ToTable("Languages", (string)null);
 
                     b.HasData(
                         new
@@ -198,7 +198,7 @@ namespace Concert.DataAccess.Migrations
 
                     b.HasIndex("ServiceId");
 
-                    b.ToTable("OrderDetailServices");
+                    b.ToTable("OrderDetailServices", (string)null);
                 });
 
             modelBuilder.Entity("Concert.Models.OrderDetailSong", b =>
@@ -224,7 +224,7 @@ namespace Concert.DataAccess.Migrations
 
                     b.HasIndex("SongId");
 
-                    b.ToTable("OrderDetailSongs");
+                    b.ToTable("OrderDetailSongs", (string)null);
                 });
 
             modelBuilder.Entity("Concert.Models.OrderHeader", b =>
@@ -305,7 +305,7 @@ namespace Concert.DataAccess.Migrations
 
                     b.HasIndex("ApplicationUserId");
 
-                    b.ToTable("OrderHeaders");
+                    b.ToTable("OrderHeaders", (string)null);
                 });
 
             modelBuilder.Entity("Concert.Models.Service", b =>
@@ -333,7 +333,7 @@ namespace Concert.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Services");
+                    b.ToTable("Services", (string)null);
 
                     b.HasData(
                         new
@@ -367,7 +367,7 @@ namespace Concert.DataAccess.Migrations
 
                     b.HasIndex("ServiceId");
 
-                    b.ToTable("SetListServices");
+                    b.ToTable("SetListServices", (string)null);
                 });
 
             modelBuilder.Entity("Concert.Models.SetListSong", b =>
@@ -394,7 +394,7 @@ namespace Concert.DataAccess.Migrations
 
                     b.HasIndex("SongId");
 
-                    b.ToTable("SetListSongs");
+                    b.ToTable("SetListSongs", (string)null);
                 });
 
             modelBuilder.Entity("Concert.Models.Song", b =>
@@ -437,7 +437,7 @@ namespace Concert.DataAccess.Migrations
 
                     b.HasIndex("LanguageId");
 
-                    b.ToTable("Songs");
+                    b.ToTable("Songs", (string)null);
 
                     b.HasData(
                         new

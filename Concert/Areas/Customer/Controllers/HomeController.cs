@@ -22,8 +22,6 @@ namespace ConcertWeb.Areas.Customer.Controllers
 
         public IActionResult Index()
         {
-            
-            
             IEnumerable<Song> songList = _unitOfWork.Song.GetAll(includeProperties: "Genre,Language").OrderBy(u => u.Artist);
 
             return View(songList);
@@ -58,6 +56,11 @@ namespace ConcertWeb.Areas.Customer.Controllers
         }
 
         public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        public IActionResult About()
         {
             return View();
         }
