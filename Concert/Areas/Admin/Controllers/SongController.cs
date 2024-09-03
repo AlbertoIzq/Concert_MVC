@@ -142,6 +142,34 @@ namespace ConcertWeb.Areas.Admin.Controllers
             }
         }
 
+        public IActionResult DeleteImage(int imageId)
+        {
+            string wwwRootPath = _webHostEnvironment.WebRootPath;
+
+            var imageToBeDeleted = _unitOfWork.SongImage.Get(u => u.Id == imageId);
+            if (imageToBeDeleted != null)
+            {
+                if (!string.IsNullOrEmpty(imageToBeDeleted.ImageUrl))
+                {
+                    // Delete the old image
+                    var oldImagePath = imageToBeDeleted.ImageUrl.TrimStart(Path.PathSeparator);
+                    var oldImageFullPath = Path.Combine(wwwRootPath, oldImagePath);
+
+                    if (System.IO.File.Exists(oldImageFullPath))
+                    {
+                        System.IO.File.Delete(oldImageFullPath);
+                    }
+                }
+
+                _unitOfWork.SongImage.Remove(imageToBeDeleted);
+                _unitOfWork.Save();
+
+                TempData["success"] = "Image deleted successfully";
+            }
+
+            return RedirectToAction(nameof(Upsert), new { id = imageToBeDeleted.SongId });
+        }
+
         private void ValidateSong(Song song, List<IFormFile> files)
         {   
             if (char.IsAsciiLetterLower(song.Artist.ElementAt(0)))
@@ -159,20 +187,6 @@ namespace ConcertWeb.Areas.Admin.Controllers
             {
                 ModelState.AddModelError("Song.ImageUrl", "You have to add an image file.");
             }
-        }
-
-        private void DeleteOldImage(Song song)
-        {
-            string wwwRootPath = _webHostEnvironment.WebRootPath;
-
-            //// Delete the old image
-            //var oldImagePath = song.ImageUrl.TrimStart(Path.PathSeparator);
-            //var oldImageFullPath = Path.Combine(wwwRootPath, oldImagePath);
-
-            //if (System.IO.File.Exists(oldImageFullPath))
-            //{
-            //    System.IO.File.Delete(oldImageFullPath);
-            //}
         }
 
         #region ApiCalls
@@ -194,7 +208,8 @@ namespace ConcertWeb.Areas.Admin.Controllers
             }
 
             // Delete the old image
-            DeleteOldImage(songToBeDeleted);
+            //DeleteOldImage(songToBeDeleted);
+            /// @todo
 
             _unitOfWork.Song.Remove(songToBeDeleted);
             _unitOfWork.Save();
