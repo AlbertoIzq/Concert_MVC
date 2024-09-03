@@ -18,5 +18,10 @@ namespace Concert.DataAccess.Repository
         {
             _db = db;
         }
+
+        public void Update(ApplicationUser applicationUser)
+        {
+            _db.ApplicationUser.Update(applicationUser);
+        }
     }
 }

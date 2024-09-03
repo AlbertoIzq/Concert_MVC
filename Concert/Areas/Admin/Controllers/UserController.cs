@@ -17,17 +17,14 @@ namespace ConcertWeb.Areas.Admin.Controllers
     [Authorize(Roles = SD.ROLE_ADMIN)]
     public class UserController : BaseController
     {
-        private readonly ApplicationDbContext _db;
         private readonly IUnitOfWork _unitOfWork;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public UserController(ApplicationDbContext db,
-            IUnitOfWork unitOfWork,
+        public UserController(IUnitOfWork unitOfWork,
             RoleManager<IdentityRole> roleManager,
             UserManager<IdentityUser> userManager)
         {
-            _db = db;
             _unitOfWork = unitOfWork;
             _roleManager = roleManager;
             _userManager = userManager;
@@ -40,16 +37,13 @@ namespace ConcertWeb.Areas.Admin.Controllers
 
         public IActionResult RoleManagement(string userId)
         {
-            string roleId = _db.UserRoles.FirstOrDefault(u => u.UserId == userId).RoleId;
-
             RoleManagementVM roleManagementVM = new()
             {
-                // The same: ApplicationUser = _unitOfWork.ApplicationUser.Get(u => u.Id == userId, includeProperties: "Company")
-                ApplicationUser = _db.ApplicationUser.Include(u => u.Company).FirstOrDefault(u => u.Id == userId),
-                RoleList = _roleManager.Roles.Select(x => x.Name).Select(i => new SelectListItem
+                ApplicationUser = _unitOfWork.ApplicationUser.Get(u => u.Id == userId, includeProperties: "Company"),
+                RoleList = _roleManager.Roles.Select(i => new SelectListItem
                 {
-                    Text = i,
-                    Value = i
+                    Text = i.Name,
+                    Value = i.Name
                 }),
                 CompanyList = _unitOfWork.Company.GetAll().OrderBy(u => u.Name).Select(u => new SelectListItem()
                 {
@@ -59,8 +53,8 @@ namespace ConcertWeb.Areas.Admin.Controllers
                 
             };
 
-            // The same: roleManagementVM.ApplicationUser.Role = _userManager.GetRolesAsync(roleManagementVM.ApplicationUser).GetAwaiter().GetResult().FirstOrDefault();
-            roleManagementVM.ApplicationUser.Role = _db.Roles.FirstOrDefault(u => u.Id == roleId).Name;
+            roleManagementVM.ApplicationUser.Role = _userManager.GetRolesAsync(roleManagementVM.ApplicationUser).
+                GetAwaiter().GetResult().FirstOrDefault();
 
             return View(roleManagementVM);
         }
@@ -68,13 +62,15 @@ namespace ConcertWeb.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult RoleManagement(RoleManagementVM roleManagementVM)
         {
-            string roleId = _db.UserRoles.FirstOrDefault(u => u.UserId == roleManagementVM.ApplicationUser.Id).RoleId;
-            string oldRole = _db.Roles.FirstOrDefault(u => u.Id == roleId).Name;
+
+            string oldRole = _userManager.GetRolesAsync(roleManagementVM.ApplicationUser).
+                GetAwaiter().GetResult().FirstOrDefault();
+
+            ApplicationUser applicationUser = _unitOfWork.ApplicationUser.Get(u => u.Id == roleManagementVM.ApplicationUser.Id, includeProperties: "Company");
 
             if (roleManagementVM.ApplicationUser.Role != oldRole)
             {
                 // A Role was updated
-                ApplicationUser applicationUser = _db.ApplicationUser.FirstOrDefault(u => u.Id == roleManagementVM.ApplicationUser.Id);
                 if (roleManagementVM.ApplicationUser.Role == SD.ROLE_COMPANY)
                 {
                     applicationUser.CompanyId = roleManagementVM.ApplicationUser.CompanyId;
@@ -83,12 +79,21 @@ namespace ConcertWeb.Areas.Admin.Controllers
                 {
                     applicationUser.CompanyId = null;
                 }
-                _db.SaveChanges();
+                _unitOfWork.ApplicationUser.Update(applicationUser);
+                _unitOfWork.Save();
 
                 _userManager.RemoveFromRoleAsync(applicationUser, oldRole).GetAwaiter().GetResult();
                 _userManager.AddToRoleAsync(applicationUser, roleManagementVM.ApplicationUser.Role).GetAwaiter().GetResult();
             }
-
+            else
+            {
+                if (oldRole == SD.ROLE_COMPANY && applicationUser.CompanyId != roleManagementVM.ApplicationUser.CompanyId)
+                {
+                    applicationUser.CompanyId = roleManagementVM.ApplicationUser.CompanyId;
+                    _unitOfWork.ApplicationUser.Update(applicationUser);
+                    _unitOfWork.Save();
+                }
+            }
             return RedirectToAction("Index");
         }
 
@@ -97,15 +102,11 @@ namespace ConcertWeb.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            List<ApplicationUser> userList = _db.ApplicationUser.Include(u => u.Company).ToList();
-
-            var userRoles = _db.UserRoles.ToList();
-            var roles = _db.Roles.ToList();
+            List<ApplicationUser> userList = _unitOfWork.ApplicationUser.GetAll(includeProperties: "Company").ToList();
 
             foreach (var user in userList)
-            {
-                var roleId = userRoles.FirstOrDefault(u => u.UserId == user.Id).RoleId;
-                user.Role = roles.FirstOrDefault(u => u.Id == roleId).Name;
+            { 
+                user.Role = _userManager.GetRolesAsync(user).GetAwaiter().GetResult().FirstOrDefault();
 
                 if (user.Company == null)
                 {
@@ -119,7 +120,7 @@ namespace ConcertWeb.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult LockUnlock([FromBody]string id)
         {
-            var userFromDb = _db.ApplicationUser.FirstOrDefault(u => u.Id == id);
+            var userFromDb = _unitOfWork.ApplicationUser.Get(u => u.Id == id);
             if (userFromDb == null || userFromDb.Email == GetUserAdminEmail())
             {
                 return Json(new { success = false, message = "Error while locking/unlocking" });
@@ -139,8 +140,8 @@ namespace ConcertWeb.Areas.Admin.Controllers
                 operation = "Locked";
             }
 
-            // This will work because the record is being tracked by EFC
-            _db.SaveChanges();
+            _unitOfWork.ApplicationUser.Update(userFromDb);
+            _unitOfWork.Save();
 
             return Json(new { success = true, message = $"User {operation} successfully" });
         }

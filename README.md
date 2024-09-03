@@ -17,6 +17,14 @@ _TECHNOLOGIES USED_
 - C# libraries:
   - SendGrid: Twilio library to send emails
 
+_CONCEPTS USED_
+
+- N-Tier architecture
+- Design patterns: Repository and UnitOfWork
+- Roles, Authorization and Session in .NET Core
+- User management
+- Seed Database with DbInitializer
+
 _TODO_
 
 - Areas/Identity:
