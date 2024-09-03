@@ -207,9 +207,20 @@ namespace ConcertWeb.Areas.Admin.Controllers
                 return Json(new { success = false, message = "Error while deleting" });
             }
 
-            // Delete the old image
-            //DeleteOldImage(songToBeDeleted);
-            /// @todo
+            // Delete the old images
+            string wwwRootPath = _webHostEnvironment.WebRootPath;
+            string internalPath = @"images\songs\song-" + id;
+            string songPath = Path.Combine(wwwRootPath, internalPath);
+
+            if (!Directory.Exists(songPath))
+            {
+                string[] filePaths = Directory.GetFiles(songPath);
+                foreach (var filePath in filePaths)
+                {
+                    System.IO.File.Delete(filePath);
+                }
+                Directory.Delete(songPath);
+            }
 
             _unitOfWork.Song.Remove(songToBeDeleted);
             _unitOfWork.Save();
