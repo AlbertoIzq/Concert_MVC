@@ -53,11 +53,10 @@
                             <label asp-for="Song.LanguageId" class="ms-2"></label>
                             <span asp-validation-for="Song.LanguageId" class="text-danger"></span>
                         </div>
-                        @* <div class="form-floating py-2 col-12">
-                            <input type="file" name="file" class="form-control border-0 shadow" />
-                            <label asp-for="Song.ImageUrl" class="ms-2"></label>
-                            <span asp-validation-for="Song.ImageUrl" class="text-danger"></span>
-                        </div> *@
+                        <div class="form-floating py-2 col-12">
+                            <input type="file" name="files" class="form-control border-0 shadow" multiple />
+                            <label asp-for="Song.SongImages" class="ms-2"></label>
+                        </div>
                         <div class="row pt-2">
                             <div class="col-6 col-md-3">
                                 @{
