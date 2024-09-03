@@ -7,7 +7,15 @@
             <div class="row p-2">
                 <div class="col-12 p-1">
                     <div class="card border-0 p-2 shadow border-top border-5 rounded">
-                        @* <img src="@song.ImageUrl" class="card-img-top rounded" /> *@
+                        @if(song.SongImages != null && song.SongImages.Count() > 0)
+                        {
+                            <img src="@song.SongImages.FirstOrDefault().ImageUrl" class="card-img-top rounded" />
+                        }
+                        else
+                        {
+                            // Used to display a fake image
+                            <img src="https://placehold.co/500x600/png" class="card-img-top rounderd" />
+                        }
                         <div class="card-body pb-0">
                             <div class="pl-1">
                                 <p class="card-title h6 text-dark opacity-75 text-uppercase text-center">@song.Title</p>
