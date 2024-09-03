@@ -50,6 +50,13 @@ namespace ConcertWeb.Areas.Customer.Controllers
                 _unitOfWork.Save();
             }
 
+            IEnumerable<SongImage> songImages = _unitOfWork.SongImage.GetAll();
+
+            foreach (SetListSong setListSong in SetListVM.SongList)
+            {
+                setListSong.Song.SongImages = songImages.Where(u => u.SongId == setListSong.SongId).ToList();
+            }
+
             // Calculate Order total
             int songCount = SetListVM.SongList.Count();
             foreach (var setListService in SetListVM.ServiceList)

@@ -22,7 +22,7 @@ namespace ConcertWeb.Areas.Customer.Controllers
 
         public IActionResult Index()
         {
-            IEnumerable<Song> songList = _unitOfWork.Song.GetAll(includeProperties: "Genre,Language").OrderBy(u => u.Artist);
+            IEnumerable<Song> songList = _unitOfWork.Song.GetAll(includeProperties: "Genre,Language,SongImages").OrderBy(u => u.Artist);
 
             return View(songList);
         }
@@ -31,7 +31,7 @@ namespace ConcertWeb.Areas.Customer.Controllers
         {
             SetListSong setListSong = new()
             {
-                Song = _unitOfWork.Song.Get(u => u.Id == songId, includeProperties: "Genre,Language"),
+                Song = _unitOfWork.Song.Get(u => u.Id == songId, includeProperties: "Genre,Language,SongImages"),
                 SongId = songId,
                 Order = 1 // By default
             };

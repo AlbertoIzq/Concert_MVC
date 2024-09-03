@@ -50,7 +50,7 @@ namespace ConcertWeb.Areas.Admin.Controllers
             // Update, otherwise is Create
             if (id != null && id != 0)
             {
-                songVM.Song = _unitOfWork.Song.Get(u => u.Id == id);
+                songVM.Song = _unitOfWork.Song.Get(u => u.Id == id, includeProperties: "SongImages");
 
                 if (songVM.Song == null)
                 {
@@ -62,38 +62,14 @@ namespace ConcertWeb.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Upsert(SongVM songVM, IFormFile? file)
+        public IActionResult Upsert(SongVM songVM, List<IFormFile> files)
         {
-            ValidateSong(songVM.Song, file);
+            ValidateSong(songVM.Song, files);
 
             if (ModelState.IsValid)
             {
                 // Create
-                // Copy uploaded image file and save ImageUrl
-                string wwwRootPath = _webHostEnvironment.WebRootPath;
-                if(file != null)
-                {
-                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                    const string internalPath = @"images\song";
-                    string songPath = Path.Combine(wwwRootPath, internalPath);
-
-                    // If we upload a new image
-                    if (!string.IsNullOrEmpty(songVM.Song.ImageUrl))
-                    {
-                        // Delete the old image
-                        DeleteOldImage(songVM.Song);
-                    }
-
-                    using (var fileStream = new FileStream(Path.Combine(songPath, fileName), FileMode.Create))
-                    {
-                        file.CopyTo(fileStream);
-                    }
-
-                    songVM.Song.ImageUrl = Path.Combine(internalPath, fileName);
-                }
-
-                // Create
-                if (songVM.Song.Id == 0) 
+                if (songVM.Song.Id == 0)
                 {
                     _unitOfWork.Song.Add(songVM.Song);
                     _unitOfWork.Save();
@@ -106,7 +82,47 @@ namespace ConcertWeb.Areas.Admin.Controllers
                     _unitOfWork.Save();
                     TempData["success"] = "Song updated successfully";
                 }
-                
+
+                // Create
+                // Copy uploaded image file and save ImageUrl
+                string wwwRootPath = _webHostEnvironment.WebRootPath;
+                if(files != null)
+                {
+                    foreach (IFormFile file in files)
+                    {
+                        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                        string internalPath = @"images\songs\song-" + songVM.Song.Id;
+                        string songPath = Path.Combine(wwwRootPath, internalPath);
+
+                        if (!Directory.Exists(songPath))
+                        {
+                            Directory.CreateDirectory(songPath);
+                        }
+
+                        using (var fileStream = new FileStream(Path.Combine(songPath, fileName), FileMode.Create))
+                        {
+                            file.CopyTo(fileStream);
+                        }
+
+                        SongImage songImage = new()
+                        {
+                            ImageUrl = "\\" + Path.Combine(internalPath, fileName),
+                            SongId = songVM.Song.Id,
+                        };
+
+                        if (songVM.Song.SongImages == null)
+                        {
+                            songVM.Song.SongImages = new List<SongImage>();
+                        }
+
+                        songVM.Song.SongImages.Add(songImage);
+                        // This would be a way to do it
+                        // _unitOfWork.SongImage.Add(songImage);
+                    }
+
+                    _unitOfWork.Song.Update(songVM.Song);
+                    _unitOfWork.Save();
+                }
                 return RedirectToAction("Index");
             }
             else
@@ -126,7 +142,35 @@ namespace ConcertWeb.Areas.Admin.Controllers
             }
         }
 
-        private void ValidateSong(Song song, IFormFile? file)
+        public IActionResult DeleteImage(int imageId)
+        {
+            string wwwRootPath = _webHostEnvironment.WebRootPath;
+
+            var imageToBeDeleted = _unitOfWork.SongImage.Get(u => u.Id == imageId);
+            if (imageToBeDeleted != null)
+            {
+                if (!string.IsNullOrEmpty(imageToBeDeleted.ImageUrl))
+                {
+                    // Delete the old image
+                    var oldImagePath = imageToBeDeleted.ImageUrl.TrimStart(Path.PathSeparator);
+                    var oldImageFullPath = Path.Combine(wwwRootPath, oldImagePath);
+
+                    if (System.IO.File.Exists(oldImageFullPath))
+                    {
+                        System.IO.File.Delete(oldImageFullPath);
+                    }
+                }
+
+                _unitOfWork.SongImage.Remove(imageToBeDeleted);
+                _unitOfWork.Save();
+
+                TempData["success"] = "Image deleted successfully";
+            }
+
+            return RedirectToAction(nameof(Upsert), new { id = imageToBeDeleted.SongId });
+        }
+
+        private void ValidateSong(Song song, List<IFormFile> files)
         {   
             if (char.IsAsciiLetterLower(song.Artist.ElementAt(0)))
             {
@@ -139,23 +183,9 @@ namespace ConcertWeb.Areas.Admin.Controllers
             }
 
             // If we create a song without adding an image or we edit a song that doesn't have an image
-            else if (file == null && song.ImageUrl == null)
+            else if (files == null && song.SongImages == null)
             {
                 ModelState.AddModelError("Song.ImageUrl", "You have to add an image file.");
-            }
-        }
-
-        private void DeleteOldImage(Song song)
-        {
-            string wwwRootPath = _webHostEnvironment.WebRootPath;
-
-            // Delete the old image
-            var oldImagePath = song.ImageUrl.TrimStart(Path.PathSeparator);
-            var oldImageFullPath = Path.Combine(wwwRootPath, oldImagePath);
-
-            if (System.IO.File.Exists(oldImageFullPath))
-            {
-                System.IO.File.Delete(oldImageFullPath);
             }
         }
 
@@ -177,8 +207,20 @@ namespace ConcertWeb.Areas.Admin.Controllers
                 return Json(new { success = false, message = "Error while deleting" });
             }
 
-            // Delete the old image
-            DeleteOldImage(songToBeDeleted);
+            // Delete the old images
+            string wwwRootPath = _webHostEnvironment.WebRootPath;
+            string internalPath = @"images\songs\song-" + id;
+            string songPath = Path.Combine(wwwRootPath, internalPath);
+
+            if (!Directory.Exists(songPath))
+            {
+                string[] filePaths = Directory.GetFiles(songPath);
+                foreach (var filePath in filePaths)
+                {
+                    System.IO.File.Delete(filePath);
+                }
+                Directory.Delete(songPath);
+            }
 
             _unitOfWork.Song.Remove(songToBeDeleted);
             _unitOfWork.Save();
