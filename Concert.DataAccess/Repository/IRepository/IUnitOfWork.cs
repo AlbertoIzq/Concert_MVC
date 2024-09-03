@@ -14,6 +14,7 @@ namespace Concert.DataAccess.Repository.IRepository
         ISongRepository Song { get; }
         IServiceRepository Service { get; }
         ICompanyRepository Company { get; }
+        ISongImageRepository SongImage { get; }
         ISetListSongRepository SetListSong { get; }
         ISetListServiceRepository SetListService { get; }
         IOrderDetailSongRepository OrderDetailSong { get; }

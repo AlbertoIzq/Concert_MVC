@@ -43,8 +43,7 @@ namespace Concert.Models
         [ValidateNever]
         public Language Language { get; set; }
 
-        [DisplayName("Image Url")]
         [ValidateNever]
-        public string ImageUrl { get; set; }
+        public List<SongImage> SongImages { get; set; }
     }
 }

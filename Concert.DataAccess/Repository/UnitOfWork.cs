@@ -13,6 +13,7 @@ namespace Concert.DataAccess.Repository
         public ISongRepository Song { get; private set; }
         public IServiceRepository Service { get; private set; }
         public ICompanyRepository Company { get; private set; }
+        public ISongImageRepository SongImage { get; private set; }
         public ISetListSongRepository SetListSong { get; private set; }
         public ISetListServiceRepository SetListService { get; private set; }
         public IOrderDetailSongRepository OrderDetailSong { get; private set; }
@@ -28,6 +29,7 @@ namespace Concert.DataAccess.Repository
             Song = new SongRepository(_db);
             Service = new ServiceRepository(_db);
             Company = new CompanyRepository(_db);
+            SongImage = new SongImageRepository(_db);
             SetListSong = new SetListSongRepository(_db);
             SetListService = new SetListServiceRepository(_db);
             OrderDetailSong = new OrderDetailSongRepository(_db);

@@ -77,19 +77,19 @@ namespace ConcertWeb.Areas.Admin.Controllers
                     const string internalPath = @"images\song";
                     string songPath = Path.Combine(wwwRootPath, internalPath);
 
-                    // If we upload a new image
-                    if (!string.IsNullOrEmpty(songVM.Song.ImageUrl))
-                    {
-                        // Delete the old image
-                        DeleteOldImage(songVM.Song);
-                    }
+                    //// If we upload a new image
+                    //if (!string.IsNullOrEmpty(songVM.Song.ImageUrl))
+                    //{
+                    //    // Delete the old image
+                    //    DeleteOldImage(songVM.Song);
+                    //}
 
-                    using (var fileStream = new FileStream(Path.Combine(songPath, fileName), FileMode.Create))
-                    {
-                        file.CopyTo(fileStream);
-                    }
+                    //using (var fileStream = new FileStream(Path.Combine(songPath, fileName), FileMode.Create))
+                    //{
+                    //    file.CopyTo(fileStream);
+                    //}
 
-                    songVM.Song.ImageUrl = Path.Combine(internalPath, fileName);
+                    //songVM.Song.ImageUrl = Path.Combine(internalPath, fileName);
                 }
 
                 // Create
@@ -138,25 +138,25 @@ namespace ConcertWeb.Areas.Admin.Controllers
                 ModelState.AddModelError("Song.Title", "The Song Title must start with a capital letter.");
             }
 
-            // If we create a song without adding an image or we edit a song that doesn't have an image
-            else if (file == null && song.ImageUrl == null)
-            {
-                ModelState.AddModelError("Song.ImageUrl", "You have to add an image file.");
-            }
+            //// If we create a song without adding an image or we edit a song that doesn't have an image
+            //else if (file == null && song.ImageUrl == null)
+            //{
+            //    ModelState.AddModelError("Song.ImageUrl", "You have to add an image file.");
+            //}
         }
 
         private void DeleteOldImage(Song song)
         {
             string wwwRootPath = _webHostEnvironment.WebRootPath;
 
-            // Delete the old image
-            var oldImagePath = song.ImageUrl.TrimStart(Path.PathSeparator);
-            var oldImageFullPath = Path.Combine(wwwRootPath, oldImagePath);
+            //// Delete the old image
+            //var oldImagePath = song.ImageUrl.TrimStart(Path.PathSeparator);
+            //var oldImageFullPath = Path.Combine(wwwRootPath, oldImagePath);
 
-            if (System.IO.File.Exists(oldImageFullPath))
-            {
-                System.IO.File.Delete(oldImageFullPath);
-            }
+            //if (System.IO.File.Exists(oldImageFullPath))
+            //{
+            //    System.IO.File.Delete(oldImageFullPath);
+            //}
         }
 
         #region ApiCalls

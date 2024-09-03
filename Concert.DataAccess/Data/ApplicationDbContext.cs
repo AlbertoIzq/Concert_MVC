@@ -21,6 +21,7 @@ namespace Concert.DataAccess.Data
         public DbSet<Song> Songs { get; set; }
         public DbSet<Service> Services { get; set; }
         public DbSet<Company> Companies { get; set; }
+        public DbSet<SongImage> SongImages { get; set; }
         public DbSet<SetListSong> SetListSongs { get; set; }
         public DbSet<SetListService> SetListServices { get; set; }
         public DbSet<OrderDetailSong> OrderDetailSongs { get; set; }
@@ -54,8 +55,7 @@ namespace Concert.DataAccess.Data
                     Length = new TimeSpan(0, 2, 6),
                     ReleaseYear = 1992,
                     GenreId = 3,
-                    LanguageId = 1,
-                    ImageUrl = ""
+                    LanguageId = 1
                 },
                 new Song()
                 {
@@ -65,8 +65,7 @@ namespace Concert.DataAccess.Data
                     Length = new TimeSpan(0, 2, 19),
                     ReleaseYear = 2006,
                     GenreId = 2,
-                    LanguageId = 1,
-                    ImageUrl = ""
+                    LanguageId = 1
                 },
                 new Song()
                 {
@@ -76,8 +75,7 @@ namespace Concert.DataAccess.Data
                     Length = new TimeSpan(0, 2, 52),
                     ReleaseYear = 1997,
                     GenreId = 1,
-                    LanguageId = 3,
-                    ImageUrl = ""
+                    LanguageId = 3
                 }
             );
 
