@@ -2,6 +2,8 @@
 
 ASP .NET Core MVC project to create a live music on-demand website to book a concert by selecting the setlist and adding different services, like an e-commerce website.
 
+Check "Screenshots" folder to see how the website looks like and which functionality it has implemented.
+
 _TECHNOLOGIES USED_
 
 - ASP .NET Core MVC: Web application development framework based on the MVC architecture
